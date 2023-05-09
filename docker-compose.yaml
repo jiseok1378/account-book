@@ -1,0 +1,20 @@
+version: '3.3'
+
+volumes:
+  dev_db:
+  media-data-volume: 
+
+services:
+  web:
+    build:
+      context: ./web
+      dockerfile: DockerFile
+    restart: "on-failure"
+    hostname: localhost
+    volumes:
+      - ./web:/front
+    ports:
+      - 8080:8080
+      - 8081:8081
+    stdin_open: true
+    tty: true
