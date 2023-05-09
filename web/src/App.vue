@@ -1,17 +1,27 @@
 <template>
   <div id="app">
     <nav>
-      <router-link to="/">a</router-link> |
-      <router-link to="/about">aaaa</router-link>
+      <router-link to="/">{{helloWorld}}</router-link> |
+      <router-link to="/about">About</router-link>
     </nav>
     <router-view/>
   </div>
 </template>
 
 <script lang="ts">
-export default{
-
-}
+import {defineComponent} from 'vue';
+import axios from 'axios';
+export default defineComponent({
+  data(){
+    return {
+      helloWorld : ""
+    }
+  },
+  async beforeMount(){
+    const helloWorld : string = (await axios.get("api/hello/world")).data as string;
+    this.helloWorld = helloWorld;
+  }
+});
 </script>
 <style lang="scss">
 #app {
