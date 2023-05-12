@@ -5,6 +5,7 @@
 - [1. Project environments information](#1-project-environments-information)
 - [2. Setting project environment](#2-setting-project-environments)
 - [3. Build project](#3-build-project)
+- [4. Skill Set](#4-skill-set)
 ---
 <br />
 
@@ -110,3 +111,54 @@
 ## 3. Build project
 
 <br />
+
+## 4. Skill Set
+
+> server
+
+- Spring book framework  
+  - WAS(Web Application Server)
+
+- Spring web soket
+  - Pair Message Alarm (Web Socket)
+
+- Mybatis
+  - ORM 
+
+- JWT
+  - Authentication, Authorization
+
+- Lombok
+  - Java code diet library
+
+- Junit
+  - Java unit test
+
+> web
+
+
+- Node.js + Typescript
+  - Web language
+
+- Vue.js
+  - UI Interface framework
+
+- Yarn
+  - Node.js package manager
+  
+- Vuex 
+  - Magnagement state + pattern library 
+
+- Vuetify
+  - UI component Framework
+
+- Axios
+  - Promise based HTTP client
+
+- Web socket client
+  - web socket client
+
+> TODO
+
+- Nginx
+  - load-balancer, reverse-proxy
