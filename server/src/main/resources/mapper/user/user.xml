@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+    [템플릿 설명]
+    - 해당 파일은 SQL 문을 작성하는 곳입니다.
+-->
+<mapper namespace="com.account.book.user.dao.UserDAO">
+
+    <insert id="addUser" parameterType="com.account.book.user.vo.UserDTO">
+        INSERT INTO TB_USER(
+            USER_ID,
+            USER_PW,
+            USER_NM,
+            FIRST_CREATE_IP,
+            LAST_LOGIN_IP,
+            LAST_LOGIN_DATE
+        )
+        VALUES
+        (
+            #{userId},
+            #{userPw},
+            #{userNm},
+            #{firstCreateIp},
+            #{lastLoginIp},
+            #{lastLoginDate}
+        )
+    </insert>
+    <delete id="deleteUser" parameterType="java.lang.Integer">
+        DELETE
+        FROM TB_USER
+        WHERE
+            USER_SN = #{0}
+    </delete>
+    <select id="findAllUser" resultType="com.account.book.user.vo.UserDTO">
+        SELECT * FROM TB_USER
+    </select>
+    <select id="findUserByUserSn" parameterType="java.lang.Integer" resultType="com.account.book.user.vo.UserDTO">
+        SELECT * FROM TB_USER WHERE USER_SN = #{0}
+    </select>
+    <select id="findUserByUserId" parameterType="java.lang.String" resultType="com.account.book.user.vo.UserDTO">
+        SELECT * FROM TB_USER WHERE USER_ID = #{0}
+    </select>
+
+</mapper>
