@@ -2,6 +2,10 @@ package com.account.book.cmmn.util;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * CommonUtil 은 싱글톤 객체로 생성자가 private임.
+ * new 연산자를 통해 객체 생성 불가.
+ */
 public class CommonUtil {
     private CommonUtil(){}
     public static String getClientIP(HttpServletRequest request) {
