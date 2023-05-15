@@ -51,7 +51,7 @@ const parseOption = ( argv ) => {
         }
     ];
 
-    let helpFlag = false;
+    let helpFlag = argv.includes('--help');
     
     opt.forEach((x)=> {
         x.long = "-" + x.long
@@ -66,10 +66,6 @@ const parseOption = ( argv ) => {
             const option = arg.slice(1, arg.length);
 
             const target = opt.find((value) => value.long == option || value.short == option)
-            
-            if(option === 'help'){
-                helpFlag = true;
-            }
 
             if( target == undefined ){
                 if(!helpFlag) console.error(`Invalid option: ${arg}`)
