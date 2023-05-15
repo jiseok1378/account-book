@@ -41,27 +41,26 @@ const parseClassPath = ( classPath ) => {
     
     const filePath = path.join(...[...serverTestDirPath,...dirArray])
     
-    const dirDeps = dirArray.map( (x, idx) => path.join(...[...serverTestDirPath,...dirArray.slice(0, idx), x]))
-    
     const package = dirArray.join(".")
 
     const className = classPathArray[classPathArray.length - 1];
 
-    return { fileName, filePath, dirDeps, package, className };
+    return { fileName, filePath, package, className };
 }
 
-const mkdirs = async (dirDeps) => {
-    const loop = async (dirDeps, index = 0) => {
-        if( dirDeps.length == index ){
+const mkdirs = async (filePath) => {
+
+    const loop = async (dirs, nowDir = '', index = 0) => {
+        if( dirs.length == index ){
             return true;
         }
         else{
-            const targetDir = dirDeps[index]; 
+            const targetDir = path.join(nowDir, dirs[index]); 
             try{
                 if( !(await fs.existsSync(targetDir)) ){
                     await fs.mkdirSync(targetDir);
                 }
-                return loop(dirDeps, ++index)    
+                return loop(dirs, targetDir, ++index)    
             }
             catch(e){
                 console.log(`mkdir error: ${targetDir}`)
@@ -69,7 +68,8 @@ const mkdirs = async (dirDeps) => {
             }
         }
     }
-    return await loop(dirDeps);
+
+    return await loop(filePath.split(path.sep));
 }
 
 const makeTestTemplateFile = async ( file, package, className, displayName) =>{
@@ -164,9 +164,9 @@ const main = async (argv) => {
         return;
     }
     
-    const { fileName, filePath, dirDeps, package, className } = parseResult;
+    const { fileName, filePath, package, className } = parseResult;
     
-    if ( !await mkdirs(dirDeps) ){
+    if ( !await mkdirs(filePath) ){
         return;
     }
 
