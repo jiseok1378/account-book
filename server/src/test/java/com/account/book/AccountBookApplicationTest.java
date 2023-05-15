@@ -50,7 +50,7 @@ public class AccountBookApplicationTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(requestBody, "Hello world");
+        assertEquals(requestBody, "Hello World");
 
     }
 }

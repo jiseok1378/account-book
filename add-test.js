@@ -4,22 +4,74 @@ const path = require('path');
 
 const serverTestDirPath = [".", "server", "src", "test", "java"]
 
-const verifyArgs = (argv) => {
-    if(argv.length <= 5){
-        return true;
+let isValidOption = true;
+
+const parseOption = ( argv ) => {
+
+    const opt = [
+        { 
+            long: 'class',
+            short: 'c',
+            require: true,
+            description: 'Input java class path'
+        },
+        {
+            long: 'debug',
+            short: 'd',
+            description: 'Debug',
+            isBool : true,
+        },
+        {
+            long: 'name',
+            short: 'n',
+            description: 'Input test class title'
+        }
+    ];
+    argv.forEach((arg, index) => {
+        if( arg.startsWith("-") ){
+            const option = arg.replace(/-/gi, '');
+            const target = opt.find((value) => value.long == option || value.short == option)
+            
+            if( target == undefined ){
+                console.error(`Invalid option: ${arg}`)
+                isValidOption = false;
+                return;
+            }
+            
+            if( target.isBool ){
+                target.data = true;
+            }
+            else {
+                target.data = argv[index + 1]
+            }
+        }
+    });
+
+    const noDataOptions = opt.filter((x) => x.require && !x.data )
+    if(noDataOptions.length != 0){
+        console.error(`Required Option: [ ${noDataOptions.map(x => `--${x.long} ${x.short ? `| -${x.short}` : ''}`).join(" , ")} ]`)
+        isValidOption = false;
     }
-    else{
-        return false;
-    }
+            
+
+    return opt;
 }
 
-const initOptions = (argv) => {
-    const [, , classPath, testName, debug] = argv;
-    return {classPath, testName, debug}
+
+const getOptionData = (argv) => {
+    const map = {};
+    OPTIONS.forEach( x => map[x.long] = x.data);
+    return map
 }
 
 const printUseage = () => {
-    console.log("Usage: node add-test.js [Target Class Path] [debug]")
+    const msg = `
+Usage : node ${path.basename(__filename)} [OPTIONS...]
+
+Options:
+    ${OPTIONS.map(x => ( x.description ? `\t[ --${x.long} ${x.short ? `| -${x.short}`: ``} ] \t${x.description} ${x.require ? '[Require]' : ''}` : "" )).join("\n")}
+`
+    console.log(msg);
 }
 
 const verifyClassPath = ( classPath ) => {
@@ -34,7 +86,6 @@ const printInvalidClassPath = ( classPath ) => {
 const parseClassPath = ( classPath ) => {
     const classPathArray = classPath.split(".");
     
-
     const dirArray = classPathArray.slice(0, classPathArray.length - 1);
 
     const fileName = `${classPathArray[classPathArray.length - 1]}.java`;
@@ -123,37 +174,39 @@ public class ${className} {
     }
     const contents = getContents();
 
-    if( !(await fs.existsSync(file)) ){
-        await fs.writeFileSync(file, contents)
+    try{
+        if( !(await fs.existsSync(file)) ){
+            await fs.writeFileSync(file, contents)
+            console.log(`SUCCESS: ${file}`)
+        }
+        else{
+            console.log(`EXIST ERROR: ${file}`)
+        }    
+    }catch(e){
+        console.error("=== UNKNOWN ERROR ===")
+        console.error(e)
     }
 }
 
-const test = ( ...callback ) => {
-    callback.map( x => 
-        (
-            {
-                name : x.toString(),
-                ret : x.apply() 
-            }
-        )
-    ).forEach( x => console.log(JSON.stringify(x, null, 3)) );
-}
 
+const OPTIONS = parseOption(process.argv);
 
-const main = async (argv) => {
-    if( !verifyArgs(argv) ){
+const DEBUG = OPTIONS.find(x =>x.long == 'debug').data;
+
+const main = async () => {
+    if( !isValidOption ){
         printUseage();
         return;
     }
-    const {classPath, testName, debug} = initOptions(argv);
     
-    if( debug ){
-        test( 
-            () => verifyClassPath("a.b.c.d/test"),
-            () => parseClassPath("a.b.c.d.Test.java")
-        )
+    if( DEBUG ){
+        console.log(OPTIONS)
     }
 
+    const options = getOptionData();
+    
+    const classPath = options["class"]
+    const { name, debug } = options
     if( !verifyClassPath( classPath ) ){
         printInvalidClassPath( classPath )
         return;
@@ -170,9 +223,9 @@ const main = async (argv) => {
         return;
     }
 
-    await makeTestTemplateFile(path.join(filePath, fileName), package, className, testName);
+    await makeTestTemplateFile(path.join(filePath, fileName), package, className, name);
     
 };
 
 
-main(process.argv);
+main();
