@@ -14,7 +14,8 @@ const verifyArgs = (argv) => {
 }
 
 const initOptions = (argv) => {
-    return [argv[2], argv[3]]
+    const [, , classPath, testName, debug] = argv;
+    return {classPath, testName, debug}
 }
 
 const printUseage = () => {
@@ -71,26 +72,37 @@ const mkdirs = async (dirDeps) => {
     return await loop(dirDeps);
 }
 
-const makeTestTemplateFile = async ( file, package, className) =>{
-    const contents = `
+const makeTestTemplateFile = async ( file, package, className, displayName) =>{
+    const getContents = () => {
+        const contents = `
 package ${package};
 
 import org.junit.jupiter.api.Test;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.*;
 import org.mockito.Spy;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") // 자바 MockMvc 경고 무시
+##DISPLAY_NAME##
 public class ${className} {
 
     @Autowired
@@ -101,7 +113,16 @@ public class ${className} {
 
     }
 }
-    `
+        `
+        if(displayName === undefined || displayName === null || displayName === ''){
+            return contents.replace(/##DISPLAY_NAME##/, '')
+        }
+        else{
+            return contents.replace(/##DISPLAY_NAME##/, `@DisplayName("${displayName}")`)
+        }
+    }
+    const contents = getContents();
+
     if( !(await fs.existsSync(file)) ){
         await fs.writeFileSync(file, contents)
     }
@@ -124,21 +145,21 @@ const main = async (argv) => {
         printUseage();
         return;
     }
-    const [CLASS_PATH, DEBUG_OPT] = initOptions(argv);
+    const {classPath, testName, debug} = initOptions(argv);
     
-    if( DEBUG_OPT ){
+    if( debug ){
         test( 
             () => verifyClassPath("a.b.c.d/test"),
             () => parseClassPath("a.b.c.d.Test.java")
         )
     }
 
-    if( !verifyClassPath( CLASS_PATH ) ){
-        printInvalidClassPath( CLASS_PATH )
+    if( !verifyClassPath( classPath ) ){
+        printInvalidClassPath( classPath )
         return;
     }
 
-    const parseResult = parseClassPath(CLASS_PATH);
+    const parseResult = parseClassPath(classPath);
     if( !parseResult ){
         return;
     }
@@ -149,7 +170,7 @@ const main = async (argv) => {
         return;
     }
 
-    await makeTestTemplateFile(path.join(filePath, fileName), package, className);
+    await makeTestTemplateFile(path.join(filePath, fileName), package, className, testName);
     
 };
 
