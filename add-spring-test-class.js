@@ -54,6 +54,7 @@ const parseOption = ( argv ) => {
     let helpFlag = false;
     
     opt.forEach((x)=> {
+        x.long = "-" + x.long
         if( x.default ){
             x.data = x.default;
         }
@@ -62,7 +63,8 @@ const parseOption = ( argv ) => {
     argv.forEach((arg, index) => {
         if( arg.startsWith("-") ){
         
-            const option = arg.replace(/-/gi, '');
+            const option = arg.slice(1, arg.length);
+
             const target = opt.find((value) => value.long == option || value.short == option)
             
             if(option === 'help'){
@@ -133,7 +135,7 @@ const printUseage = () => {
                     return ''
                 }
             }
-            return `\t${`--${option.long.padEnd(getMaxLongSize, " ")} ${short.padEnd(getMaxShortSize, " ")}${param()}`.padEnd(35, " ")} ${option.description} ${required} ${defalutVal()}`;
+            return `\t${`-${option.long.padEnd(getMaxLongSize, " ")} ${short.padEnd(getMaxShortSize, " ")}${param()}`.padEnd(35, " ")} ${option.description} ${required} ${defalutVal()}`;
         }
         else{
             return ''
@@ -272,7 +274,7 @@ public class ${className} {
 
 
 const OPTIONS = parseOption(process.argv);
-const DEBUG = OPTIONS.find(x =>x.long == 'debug').data;
+const DEBUG = OPTIONS.find(x =>x.name == 'debug').data;
 
 const main = async () => {
 
