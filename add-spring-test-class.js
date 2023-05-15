@@ -2,38 +2,75 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const serverTestDirPath = [".", "server", "src", "test", "java"]
-
 let isValidOption = true;
 
 const parseOption = ( argv ) => {
 
     const opt = [
+        {
+            name: 'help',
+            long: 'help',
+            isBool : true,
+            description: 'Print help'
+        },
         { 
+            name: 'classPath',
             long: 'class',
             short: 'c',
+            param: 'class-path',
             require: true,
             description: 'Input java class path'
         },
         {
+            name: 'debug', 
             long: 'debug',
             short: 'd',
             description: 'Debug',
             isBool : true,
         },
         {
+            name: 'name',
+            param: 'class-title',
             long: 'name',
             short: 'n',
             description: 'Input test class title'
+        },
+        {
+            name: 'serverPath',
+            param: 'server-path',
+            long: 'server',
+            short: 's',
+            description: 'Server source path',
+            default: [".", "server", "src", "test", "java"],
+            preprocess: (arg) => {
+                return path.normalize(arg).split(path.sep);
+            },
+            printDefault: (data) => {
+                return data.default.join(path.sep)
+            }
         }
     ];
+
+    let helpFlag = false;
+    
+    opt.forEach((x)=> {
+        if( x.default ){
+            x.data = x.default;
+        }
+    });
+
     argv.forEach((arg, index) => {
         if( arg.startsWith("-") ){
+        
             const option = arg.replace(/-/gi, '');
             const target = opt.find((value) => value.long == option || value.short == option)
             
+            if(option === 'help'){
+                helpFlag = true;
+            }
+
             if( target == undefined ){
-                console.error(`Invalid option: ${arg}`)
+                if(!helpFlag) console.error(`Invalid option: ${arg}`)
                 isValidOption = false;
                 return;
             }
@@ -42,14 +79,20 @@ const parseOption = ( argv ) => {
                 target.data = true;
             }
             else {
-                target.data = argv[index + 1]
+                if( target.preprocess ){
+                    target.data = target.preprocess(argv[index + 1]);
+                }
+                else{
+                    target.data = argv[index + 1]
+                }
             }
         }
     });
 
     const noDataOptions = opt.filter((x) => x.require && !x.data )
+
     if(noDataOptions.length != 0){
-        console.error(`Required Option: [ ${noDataOptions.map(x => `--${x.long} ${x.short ? `| -${x.short}` : ''}`).join(" , ")} ]`)
+        if(!helpFlag) console.error(`Required Option: [ ${noDataOptions.map(x => `--${x.long} ${x.short ? `| -${x.short}` : ''}`).join(" , ")} ]`)
         isValidOption = false;
     }
             
@@ -58,18 +101,49 @@ const parseOption = ( argv ) => {
 }
 
 
+
 const getOptionData = (argv) => {
     const map = {};
-    OPTIONS.forEach( x => map[x.long] = x.data);
+    OPTIONS.forEach( x => map[x.name] = x.data);
     return map
 }
 
 const printUseage = () => {
+
+    const getMaxLongSize = Math.max(...OPTIONS.filter(x=>x.long).map(x=>x.long.length))
+    const getMaxShortSize = Math.max(...OPTIONS.filter(x=>x.short).map(x=>x.short.length))
+
+    const makeOptionMsg = (option) => {
+        if(option.description){
+            const short = option.short ? `| -${option.short} `: ``
+            const required = option.require ? '[Require]' : ''
+            const param = () => {
+                if(!option.isBool){
+                    return ` <${option.param ? option.param : 'param'}> `
+                }
+                else{
+                    return ''
+                }
+            }
+            const defalutVal = () => {
+                if(option.default){
+                    return `[ Default: ${option.printDefault? option.printDefault(option) : option.defult} ]`
+                }
+                else{
+                    return ''
+                }
+            }
+            return `\t${`--${option.long.padEnd(getMaxLongSize, " ")} ${short.padEnd(getMaxShortSize, " ")}${param()}`.padEnd(35, " ")} ${option.description} ${required} ${defalutVal()}`;
+        }
+        else{
+            return ''
+        }
+    }  
     const msg = `
 Usage : node ${path.basename(__filename)} [OPTIONS...]
 
 Options:
-    ${OPTIONS.map(x => ( x.description ? `\t[ --${x.long} ${x.short ? `| -${x.short}`: ``} ] \t${x.description} ${x.require ? '[Require]' : ''}` : "" )).join("\n")}
+    ${OPTIONS.map(makeOptionMsg).join("\n")}
 `
     console.log(msg);
 }
@@ -91,14 +165,14 @@ const verifyClassPath = ( classPath ) => {
     }
 }
 
-const parseClassPath = ( classPath ) => {
+const parseClassPath = ( serverPath, classPath ) => {
     const classPathArray = classPath.split(".");
     
     const dirArray = classPathArray.slice(0, classPathArray.length - 1);
 
     const fileName = `${classPathArray[classPathArray.length - 1]}.java`;
     
-    const filePath = path.join(...[...serverTestDirPath,...dirArray])
+    const filePath = path.join(...[...serverPath,...dirArray])
     
     const package = dirArray.join(".")
 
@@ -198,11 +272,13 @@ public class ${className} {
 
 
 const OPTIONS = parseOption(process.argv);
-
 const DEBUG = OPTIONS.find(x =>x.long == 'debug').data;
 
 const main = async () => {
-    if( !isValidOption ){
+
+    const { name, serverPath, classPath, help } = getOptionData()
+
+    if( !isValidOption || help ){
         printUseage();
         return;
     }
@@ -210,18 +286,12 @@ const main = async () => {
     if( DEBUG ){
         console.log(OPTIONS)
     }
-
-    const options = getOptionData();
-    
-    const classPath = options["class"]
-
-    const { name } = options
     
     if( !verifyClassPath( classPath ) ){
         return;
     }
 
-    const parseResult = parseClassPath(classPath);
+    const parseResult = parseClassPath(serverPath, classPath);
     if( !parseResult ){
         return;
     }
