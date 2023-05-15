@@ -37,8 +37,6 @@ public class AccountBookApplicationTest {
 
     @Test
     void test() throws Exception {
-          ;
-
         String requestBody = mvc.perform( get("/api/hello/world")
                     .characterEncoding("UTF-8")
                     .contentType(MediaType.APPLICATION_JSON)
