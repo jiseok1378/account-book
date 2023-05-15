@@ -100,7 +100,7 @@ const parseOption = ( argv ) => {
 
 
 
-const getOptionData = (argv) => {
+const getOptionData = () => {
     const map = {};
     OPTIONS.forEach( x => map[x.name] = x.data);
     return map
