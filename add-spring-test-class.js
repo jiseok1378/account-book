@@ -76,11 +76,19 @@ Options:
 
 const verifyClassPath = ( classPath ) => {
     const regex = /[\\/]/g
-    return !regex.test(classPath);
-}
+    const classArray = classPath.split(".")
 
-const printInvalidClassPath = ( classPath ) => {
-    console.log(`Invalid class path: ${classPath}`)
+    if(regex.test(classPath)){
+        console.log(`Invalid class path: ${classPath}`)
+        return false;
+    }
+    else if(['java', 'class'].includes(classArray[classArray.length - 1])){
+        console.log(`Class names must not include extensions: ${classPath}`)
+        return false;
+    }
+    else{
+        return true;
+    }
 }
 
 const parseClassPath = ( classPath ) => {
@@ -206,9 +214,10 @@ const main = async () => {
     const options = getOptionData();
     
     const classPath = options["class"]
-    const { name, debug } = options
+
+    const { name } = options
+    
     if( !verifyClassPath( classPath ) ){
-        printInvalidClassPath( classPath )
         return;
     }
 
