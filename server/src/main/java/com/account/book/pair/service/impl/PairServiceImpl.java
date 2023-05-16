@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,19 +21,28 @@ public class PairServiceImpl implements PairService {
     }
 
     @Override
-    public PairDTO selectPairByUserSn( Integer userSn ) {
-        return pairDAO.selectPairByUserSn( userSn );
+    public PairDTO selectPairByPairSn (Integer pairSn ) {
+        return pairDAO.selectPairByPairSn( pairSn ).orElseThrow();
     }
 
     @Override
-    public void addPair( PairDTO pair ) {
+    public int addPair( PairDTO pair ) {
         pair.setAccept( AcceptStatus.PENDING );
         pairDAO.addPair( pair );
-
+        return pair.getPairSn();
     }
 
     @Override
     public void deletePair( Integer pairSn ) {
         pairDAO.deletePair( pairSn );
+    }
+
+    @Override
+    public PairDTO updatePairAccept( Integer pairSn, AcceptStatus accept ) {
+        PairDTO pairDTO = new PairDTO();
+        pairDTO.setPairSn( pairSn );
+        pairDTO.setAccept( accept );
+        pairDAO.updatePairAccept( pairDTO );
+        return selectPairByPairSn( pairSn );
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    void addUser(HttpServletRequest request, UserDTO userDTO );
+    Integer addUser(HttpServletRequest request, UserDTO userDTO );
     void deleteUser( Integer userSn );
     List<UserDTO> findAllUser();
     Optional<UserDTO> findUserByUserSn( Integer userSn );

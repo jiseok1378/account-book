@@ -25,6 +25,9 @@
             #{lastLoginIp},
             #{lastLoginDate}
         )
+        <selectKey keyProperty="userSn" resultType="java.lang.Integer" order="AFTER">
+            SELECT currval(pg_get_serial_sequence('TB_USER', 'user_sn'));
+        </selectKey>
     </insert>
     <delete id="deleteUser" parameterType="java.lang.Integer">
         DELETE

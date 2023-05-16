@@ -1,35 +1,22 @@
 
 package com.account.book.simulation;
 
+import com.account.book.pair.dto.AcceptStatus;
 import com.account.book.pair.dto.PairDTO;
 import com.account.book.user.dto.UserDTO;
-import com.account.book.user.service.UserService;
-import com.account.book.user.service.impl.UserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
+import org.junit.jupiter.api.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.event.annotation.AfterTestClass;
-import org.springframework.test.context.event.annotation.BeforeTestMethod;
 import org.springframework.test.web.servlet.MockMvc;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.DisplayName;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
-
-
-import java.nio.charset.StandardCharsets;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -42,6 +29,7 @@ import static org.mockito.Mockito.*;
 @AutoConfigureMockMvc
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") // 자바 MockMvc 경고 무시
 @DisplayName("시스템 통합 시뮬레이션 테스트")
+@TestMethodOrder(MethodOrderer.MethodName.class) // 이 클래스는 알파벳 순서대로 시스템이 동작하므로 a~z 이름의 함수명을 쓸 것.
 public class SystemSimulation {
 
     @Autowired
@@ -53,6 +41,9 @@ public class SystemSimulation {
     @Autowired
     private ObjectMapper mapper;
 
+    private static Integer user1Sn;
+    private static Integer user2Sn;
+
     @BeforeEach
     public void setup() {
         this.mvc = MockMvcBuilders.webAppContextSetup(ctx)
@@ -62,8 +53,10 @@ public class SystemSimulation {
     }
 
     @Test
-    void test() throws Exception {
+    @DisplayName("유저 생성 및 조회")
+    void a() throws Exception {
         final String userId1 = "user1";
+
         UserDTO user1 = new UserDTO();
         user1.setUserId(userId1);
         user1.setUserNm(userId1);
@@ -72,16 +65,6 @@ public class SystemSimulation {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(user1))
         ).andExpect(status().isOk());
-
-
-        UserDTO selectedUser1 = mapper.readValue(mvc.perform(get("/api/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .param("userId", userId1))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(), UserDTO.class);
-
 
         final String userId2 = "user2";
         UserDTO user2 = new UserDTO();
@@ -93,6 +76,14 @@ public class SystemSimulation {
                 .content(mapper.writeValueAsString(user2))
         ).andExpect(status().isOk());
 
+        UserDTO selectedUser1 = mapper.readValue(mvc.perform(get("/api/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("userId", userId1))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(), UserDTO.class);
+
         UserDTO selectedUser2 = mapper.readValue(mvc.perform(get("/api/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("userId", userId2))
@@ -101,38 +92,60 @@ public class SystemSimulation {
                 .getResponse()
                 .getContentAsString(), UserDTO.class);
 
+        user1Sn = selectedUser1.getUserSn();
+        user2Sn = selectedUser2.getUserSn();
+
+    }
+
+    @DisplayName("페어 생성, 수락, 조회")
+    @Test
+    void b() throws Exception {
         PairDTO pairDTO = new PairDTO();
-        pairDTO.setUserSnTo(selectedUser1.getUserSn());
-        pairDTO.setUserSnFrom(selectedUser2.getUserSn());
+        pairDTO.setUserSnTo(user1Sn);
+        pairDTO.setUserSnFrom(user2Sn);
         pairDTO.setPairMsg("나의 페어가 되어주세요!");
 
-        mvc.perform(post("/api/pair")
+        Integer insertedPairSn = mapper.readValue(mvc.perform(post("/api/pair")
                 .content(mapper.writeValueAsString(pairDTO))
                 .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isOk());
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), Integer.class);
 
         PairDTO selectedPair = mapper.readValue(mvc.perform(get("/api/pair")
-                .param("userSn", Integer.toString(selectedUser1.getUserSn()))
+                .param("pairSn", Integer.toString(insertedPairSn))
                 .contentType(MediaType.APPLICATION_JSON)
-//                .characterEncoding(StandardCharsets.UTF_8)
         ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), PairDTO.class);
 
         System.out.println(selectedPair.getPairMsg() + ":" + selectedPair.getAccept());
 
+        mvc.perform( put("/api/pair/accept")
+                .param("pairSn", Integer.toString(selectedPair.getPairSn()) )
+                .param("accept", Integer.toString(AcceptStatus.ALLOWED.getCode()))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk());
+
+        PairDTO selectedPairAfterAccept = mapper.readValue(mvc.perform(get("/api/pair")
+                .param("pairSn", Integer.toString(insertedPairSn))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), PairDTO.class);
+
+        System.out.println(selectedPair.getPairMsg() + ":" + selectedPairAfterAccept.getAccept());
+    }
+
+
+    @DisplayName("유저 삭제")
+    @Test
+    void z() throws Exception {
         mvc.perform(
                 delete("/api/user")
-                        .param("userSn", Integer.toString(selectedUser1.getUserSn()))
+                        .param("userSn", Integer.toString(user1Sn))
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk());
 
         mvc.perform(
                 delete("/api/user")
-                        .param("userSn", Integer.toString(selectedUser2.getUserSn()))
+                        .param("userSn", Integer.toString(user2Sn))
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk());
-
-
-
     }
 }
         

@@ -17,14 +17,14 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserDAO userDAO;
 
-
     @Override
-    public void addUser(HttpServletRequest request, UserDTO userDTO) {
+    public Integer addUser(HttpServletRequest request, UserDTO userDTO) {
         userDTO.setFirstCreateIp( CommonUtil.getClientIP(request) );
         userDTO.setFirstCreateDate(new Date());
         userDTO.setLastLoginDate(null);
         userDTO.setLastLoginIp(null);
         userDAO.addUser( userDTO );
+        return userDTO.getUserSn();
     }
 
     @Override

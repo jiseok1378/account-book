@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Mapper
 public interface UserDAO {
-    void addUser( UserDTO userDTO );
+    Integer addUser( UserDTO userDTO );
     void deleteUser( Integer userSn );
     List<UserDTO> findAllUser();
     Optional<UserDTO> findUserByUserSn(Integer userSn );

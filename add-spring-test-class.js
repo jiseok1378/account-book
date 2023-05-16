@@ -208,7 +208,7 @@ const makeTestTemplateFile = async ( file, package, className, displayName) =>{
         const contents = `
 package ${package};
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -219,9 +219,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.DisplayName;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -238,6 +239,17 @@ public class ${className} {
 
     @Autowired
     private MockMvc mvc;
+
+    @Autowired
+    private WebApplicationContext ctx;
+
+    @BeforeEach
+    public void setup() {
+        this.mvc = MockMvcBuilders.webAppContextSetup(ctx)
+                .addFilters(new CharacterEncodingFilter("UTF-8", true))  // 필터 추가
+                .alwaysDo(print())
+                .build();
+    }
 
     @Test
     void test() throws Exception {

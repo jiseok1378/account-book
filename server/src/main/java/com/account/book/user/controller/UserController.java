@@ -15,8 +15,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public void addUser( HttpServletRequest request, @RequestBody UserDTO userDTO ){
-        userService.addUser( request, userDTO );
+    public Integer addUser( HttpServletRequest request, @RequestBody UserDTO userDTO ){
+        return userService.addUser( request, userDTO );
     }
     @GetMapping("/all")
     public List<UserDTO> findAllUser(){

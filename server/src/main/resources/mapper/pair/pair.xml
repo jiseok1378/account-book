@@ -11,12 +11,20 @@
         SELECT * FROM TB_PAIR;
     </select>
 
-    <select id="selectPairByUserSn" parameterType="java.lang.Integer" resultType="com.account.book.pair.dto.PairDTO">
-        SELECT * FROM TB_PAIR WHERE USER_SN_FROM = #{0} OR USER_SN_TO = #{0};
+    <select id="selectPairByUserSnFrom" parameterType="java.lang.Integer" resultType="com.account.book.pair.dto.PairDTO">
+        SELECT * FROM TB_PAIR WHERE USER_SN_FROM = #{0};
+    </select>
+
+    <select id="selectPairByUserSnTo" parameterType="java.lang.Integer" resultType="com.account.book.pair.dto.PairDTO">
+        SELECT * FROM TB_PAIR WHERE USER_SN_TO = #{0};
+    </select>
+
+    <select id="selectPairByPairSn" parameterType="java.lang.Integer" resultType="com.account.book.pair.dto.PairDTO">
+        SELECT * FROM TB_PAIR WHERE PAIR_SN = #{0};
     </select>
 
 
-    <insert id="addPair" parameterType="com.account.book.pair.dto.PairDTO">
+    <insert id="addPair" parameterType="com.account.book.pair.dto.PairDTO" >
         INSERT
         INTO TB_PAIR(USER_SN_FROM, USER_SN_TO, PAIR_MSG)
         VALUES (
@@ -24,7 +32,19 @@
                 , #{userSnTo}
                 , #{pairMsg}
                 )
+        <selectKey keyProperty="pairSn" resultType="java.lang.Integer" order="AFTER">
+            SELECT currval(pg_get_serial_sequence('TB_PAIR', 'pair_sn'))
+        </selectKey>
     </insert>
+
+    <update id="updatePairAccept" parameterType="com.account.book.pair.dto.PairDTO" >
+        UPDATE TB_PAIR
+        SET ACCEPT = #{accept}
+        WHERE PAIR_SN = #{pairSn}
+        <selectKey keyProperty="pairSn" resultType="java.lang.Integer" order="AFTER">
+            SELECT PAIR_SN FROM TB_PAIR WHERE PAIR_SN = #{pairSn}
+        </selectKey>
+    </update>
 
     <delete id="deletePair" parameterType="java.lang.Integer">
         DELETE FROM TB_PAIR WHERE PAIR_SN = #{0}

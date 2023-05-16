@@ -1,5 +1,6 @@
 package com.account.book.pair.controller;
 
+import com.account.book.pair.dto.AcceptStatus;
 import com.account.book.pair.dto.PairDTO;
 import com.account.book.pair.service.PairService;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +15,18 @@ public class PairController {
     private final PairService pairService;
 
     @GetMapping
-    public PairDTO getPair( @RequestParam("userSn") Integer userSn ){
-        return pairService.selectPairByUserSn( userSn );
+    public PairDTO getPair( @RequestParam("pairSn") Integer pairSn ){
+        return pairService.selectPairByPairSn( pairSn );
     }
 
     @PostMapping
-    public void addPair( @RequestBody PairDTO pairDTO ){
-        pairService.addPair( pairDTO );
+    public int addPair( @RequestBody PairDTO pairDTO ){
+        return pairService.addPair( pairDTO );
+    }
+
+    @PutMapping("/accept")
+    public PairDTO updatePairAccept( @RequestParam("pairSn") Integer pairSn, @RequestParam("accept") Integer accept ){
+        return pairService.updatePairAccept( pairSn, AcceptStatus.getStatus(accept) );
     }
 
     @DeleteMapping
