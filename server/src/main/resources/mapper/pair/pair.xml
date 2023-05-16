@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+    [템플릿 설명]
+    - 해당 파일은 SQL 문을 작성하는 곳입니다.
+-->
+<mapper namespace="com.account.book.pair.dao.PairDAO">
+
+    <select id="selectPair" resultType="com.account.book.pair.dto.PairDTO">
+        SELECT * FROM TB_PAIR;
+    </select>
+
+    <select id="selectPairByUserSn" parameterType="java.lang.Integer" resultType="com.account.book.pair.dto.PairDTO">
+        SELECT * FROM TB_PAIR WHERE USER_SN_FROM = #{0} OR USER_SN_TO = #{0};
+    </select>
+
+
+    <insert id="addPair" parameterType="com.account.book.pair.dto.PairDTO">
+        INSERT
+        INTO TB_PAIR(USER_SN_FROM, USER_SN_TO, PAIR_MSG)
+        VALUES (
+                #{userSnFrom}
+                , #{userSnTo}
+                , #{pairMsg}
+                )
+    </insert>
+
+    <delete id="deletePair" parameterType="java.lang.Integer">
+        DELETE FROM TB_PAIR WHERE PAIR_SN = #{0}
+    </delete>
+
+
+</mapper>

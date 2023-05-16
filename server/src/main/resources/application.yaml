@@ -12,3 +12,4 @@ mybatis:
   mapper-locations: classpath:mapper/**/*.xml # Mybatis xml 파일 위치 설정
   configuration:
     map-underscore-to-camel-case: true # DB -> Java로 매핑될 때 user_id => userId 로 변환해주는 옵션
+  type-handlers-package: com.account.book.cmmn.config.handler

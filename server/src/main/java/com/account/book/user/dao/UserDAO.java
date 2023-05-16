@@ -1,6 +1,6 @@
 package com.account.book.user.dao;
 
-import com.account.book.user.vo.UserDTO;
+import com.account.book.user.dto.UserDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

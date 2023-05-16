@@ -7,7 +7,7 @@
 -->
 <mapper namespace="com.account.book.user.dao.UserDAO">
 
-    <insert id="addUser" parameterType="com.account.book.user.vo.UserDTO">
+    <insert id="addUser" parameterType="com.account.book.user.dto.UserDTO">
         INSERT INTO TB_USER(
             USER_ID,
             USER_PW,
@@ -32,13 +32,13 @@
         WHERE
             USER_SN = #{0}
     </delete>
-    <select id="findAllUser" resultType="com.account.book.user.vo.UserDTO">
+    <select id="findAllUser" resultType="com.account.book.user.dto.UserDTO">
         SELECT * FROM TB_USER
     </select>
-    <select id="findUserByUserSn" parameterType="java.lang.Integer" resultType="com.account.book.user.vo.UserDTO">
+    <select id="findUserByUserSn" parameterType="java.lang.Integer" resultType="com.account.book.user.dto.UserDTO">
         SELECT * FROM TB_USER WHERE USER_SN = #{0}
     </select>
-    <select id="findUserByUserId" parameterType="java.lang.String" resultType="com.account.book.user.vo.UserDTO">
+    <select id="findUserByUserId" parameterType="java.lang.String" resultType="com.account.book.user.dto.UserDTO">
         SELECT * FROM TB_USER WHERE USER_ID = #{0}
     </select>
 

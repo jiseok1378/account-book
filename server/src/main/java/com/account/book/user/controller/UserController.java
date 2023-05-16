@@ -1,10 +1,8 @@
 package com.account.book.user.controller;
 
-import com.account.book.user.dao.UserDAO;
 import com.account.book.user.service.UserService;
-import com.account.book.user.vo.UserDTO;
+import com.account.book.user.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +23,12 @@ public class UserController {
         return userService.findAllUser();
     }
     @GetMapping
-    public UserDTO findUserByUserSn(String userId){
+    public UserDTO findUserByUserSn( @RequestParam String userId){
         return userService.findUserByUserId( userId ).orElseThrow(() -> new RuntimeException());
+    }
+
+    @DeleteMapping
+    public void deleteUserByUserSn( @RequestParam Integer userSn ){
+        userService.deleteUser( userSn );
     }
 }

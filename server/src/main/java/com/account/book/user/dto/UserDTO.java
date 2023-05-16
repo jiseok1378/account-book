@@ -1,13 +1,15 @@
-package com.account.book.user.vo;
+package com.account.book.user.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @NoArgsConstructor
-public class UserDTO {
+public class UserDTO implements Serializable {
     private Integer userSn;
     private String userId;
     private String userPw;

@@ -1,6 +1,6 @@
 package com.account.book.user.service;
 
-import com.account.book.user.vo.UserDTO;
+import com.account.book.user.dto.UserDTO;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
