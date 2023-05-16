@@ -245,6 +245,7 @@ public class ${className} {
     }
 }
         `
+        
         if(displayName === undefined || displayName === null || displayName === ''){
             return contents.replace(/##DISPLAY_NAME##/, '')
         }
@@ -290,6 +291,7 @@ const main = async () => {
     }
 
     const parseResult = parseClassPath(serverPath, classPath);
+    
     if( !parseResult ){
         return;
     }
