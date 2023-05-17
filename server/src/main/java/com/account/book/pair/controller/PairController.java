@@ -1,5 +1,8 @@
 package com.account.book.pair.controller;
 
+import com.account.book.cmmn.util.response.CommonResult;
+import com.account.book.cmmn.util.response.ResponseService;
+import com.account.book.cmmn.util.response.SingleResult;
 import com.account.book.pair.dto.AcceptStatus;
 import com.account.book.pair.dto.PairDTO;
 import com.account.book.pair.service.PairService;
@@ -13,24 +16,26 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PairController {
     private final PairService pairService;
+    private final ResponseService responseService;
 
     @GetMapping
-    public PairDTO getPair( @RequestParam("pairSn") Integer pairSn ){
-        return pairService.selectPairByPairSn( pairSn );
+    public SingleResult<PairDTO> getPair(@RequestParam("pairSn") Integer pairSn ){
+        return responseService.getSingleResult(pairService.selectPairByPairSn( pairSn ));
     }
 
     @PostMapping
-    public int addPair( @RequestBody PairDTO pairDTO ){
-        return pairService.addPair( pairDTO );
+    public SingleResult<Integer> addPair( @RequestBody PairDTO pairDTO ){
+        return responseService.getSingleResult(pairService.addPair( pairDTO ));
     }
 
     @PutMapping("/accept")
-    public PairDTO updatePairAccept( @RequestParam("pairSn") Integer pairSn, @RequestParam("accept") Integer accept ){
-        return pairService.updatePairAccept( pairSn, AcceptStatus.getStatus(accept) );
+    public SingleResult<PairDTO> updatePairAccept( @RequestParam("pairSn") Integer pairSn, @RequestParam("accept") Integer accept ){
+        return responseService.getSingleResult(pairService.updatePairAccept( pairSn, AcceptStatus.getStatus(accept) ));
     }
 
     @DeleteMapping
-    public void deletePair( @RequestParam("pairSn") Integer pairSn ){
+    public CommonResult deletePair(@RequestParam("pairSn") Integer pairSn ){
         pairService.deletePair( pairSn );
+        return responseService.getSuccessResult();
     }
 }

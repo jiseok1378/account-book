@@ -1,5 +1,6 @@
 package com.account.book.user.controller;
 
+import com.account.book.cmmn.util.response.*;
 import com.account.book.user.service.UserService;
 import com.account.book.user.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
@@ -12,23 +13,26 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
 public class UserController {
+
     private final UserService userService;
+    private final ResponseService responseService;
 
     @PostMapping
-    public Integer addUser( HttpServletRequest request, @RequestBody UserDTO userDTO ){
-        return userService.addUser( request, userDTO );
+    public SingleResult<Integer> addUser(HttpServletRequest request, @RequestBody UserDTO userDTO ){
+        return responseService.getSingleResult(userService.addUser( request, userDTO ));
     }
     @GetMapping("/all")
-    public List<UserDTO> findAllUser(){
-        return userService.findAllUser();
+    public ListResult<UserDTO> findAllUser(){
+        return responseService.getListResult(userService.findAllUser());
     }
     @GetMapping
-    public UserDTO findUserByUserSn( @RequestParam String userId){
-        return userService.findUserByUserId( userId ).orElseThrow(() -> new RuntimeException());
+    public SingleResult<UserDTO> findUserByUserSn( @RequestParam String userId){
+        return responseService.getSingleResult(userService.findUserByUserId( userId ).orElseThrow(RuntimeException::new));
     }
 
     @DeleteMapping
-    public void deleteUserByUserSn( @RequestParam Integer userSn ){
+    public CommonResult deleteUserByUserSn(@RequestParam Integer userSn ){
         userService.deleteUser( userSn );
+        return responseService.getSuccessResult();
     }
 }

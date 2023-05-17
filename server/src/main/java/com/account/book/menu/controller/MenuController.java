@@ -1,6 +1,9 @@
 package com.account.book.menu.controller;
 
 
+import com.account.book.cmmn.util.response.CommonResult;
+import com.account.book.cmmn.util.response.ResponseService;
+import com.account.book.cmmn.util.response.SingleResult;
 import com.account.book.menu.dto.MenuDTO;
 import com.account.book.menu.service.MenuService;
 import lombok.RequiredArgsConstructor;
@@ -14,24 +17,29 @@ import java.util.List;
 public class MenuController {
 
     private final MenuService menuService;
+    private final ResponseService responseService;
 
     @PostMapping
-    public Integer addMenu( @RequestBody MenuDTO menuDTO ){
-        return menuService.addMenu( menuDTO );
+    public SingleResult<Integer> addMenu(@RequestBody MenuDTO menuDTO ){
+
+        return responseService.getSingleResult(menuService.addMenu( menuDTO ));
     }
 
     @PutMapping
-    public Integer updateMenu( MenuDTO menuDTO ){
-        return menuService.updateMenu( menuDTO );
+    public SingleResult<Integer> updateMenu( MenuDTO menuDTO ){
+
+        return responseService.getSingleResult(menuService.updateMenu( menuDTO ));
     }
 
     @DeleteMapping
-    public void deleteMenu( @RequestParam Integer menuSn ){
+    public CommonResult deleteMenu(@RequestParam Integer menuSn ){
+
         menuService.deleteMenu( menuSn );
+        return responseService.getSuccessResult();
     }
 
     @GetMapping
-    public MenuDTO selectMenu(@RequestParam Integer menuSn ){
-        return menuService.selectByMenuSn( menuSn ).orElseThrow();
+    public SingleResult<MenuDTO> selectMenu(@RequestParam Integer menuSn ){
+        return responseService.getSingleResult(menuService.selectByMenuSn( menuSn ).orElseThrow());
     }
 }

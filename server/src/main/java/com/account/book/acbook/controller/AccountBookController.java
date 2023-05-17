@@ -3,8 +3,14 @@ package com.account.book.acbook.controller;
 import com.account.book.acbook.dao.AccountBookDAO;
 import com.account.book.acbook.dto.AccountBookDTO;
 import com.account.book.acbook.service.AccountBookService;
+import com.account.book.cmmn.util.response.CommonResponse;
+import com.account.book.cmmn.util.response.CommonResult;
+import com.account.book.cmmn.util.response.ResponseService;
+import com.account.book.cmmn.util.response.SingleResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.Inet4Address;
 
 @RestController
 @RequiredArgsConstructor
@@ -12,19 +18,21 @@ import org.springframework.web.bind.annotation.*;
 public class AccountBookController {
 
     private final AccountBookService accountBookService;
+    private final ResponseService responseService;
 
     @PutMapping
-    int updateAccountBook( AccountBookDTO accountBookDTO ){
-        return accountBookService.updateAccountBook( accountBookDTO );
+    public SingleResult<Integer> updateAccountBook(AccountBookDTO accountBookDTO ){
+        return responseService.getSingleResult(accountBookService.updateAccountBook( accountBookDTO ));
     }
 
     @PostMapping
-    int addAccountBook( @RequestBody AccountBookDTO accountBookDTO ){
-        return accountBookService.addAccountBook( accountBookDTO );
+    public SingleResult<Integer> addAccountBook( @RequestBody AccountBookDTO accountBookDTO ){
+        return responseService.getSingleResult(accountBookService.addAccountBook( accountBookDTO ));
     }
 
     @DeleteMapping
-    void deleteAccountBook( @RequestParam Integer abSn ){
+    public CommonResult deleteAccountBook(@RequestParam Integer abSn ){
         accountBookService.deleteAccountBook( abSn );
+        return responseService.getSuccessResult();
     }
 }

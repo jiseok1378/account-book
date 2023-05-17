@@ -1,4 +1,4 @@
-package com.account.book.cmmn.util;
+package com.account.book.cmmn.util.cmm;
 
 import javax.servlet.http.HttpServletRequest;
 

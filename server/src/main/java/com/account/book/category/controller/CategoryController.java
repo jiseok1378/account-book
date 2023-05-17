@@ -3,6 +3,10 @@ package com.account.book.category.controller;
 import com.account.book.category.dto.CategoryDTO;
 import com.account.book.category.dto.MenuCategoryDTO;
 import com.account.book.category.service.CategoryService;
+import com.account.book.cmmn.util.response.CommonResult;
+import com.account.book.cmmn.util.response.ListResult;
+import com.account.book.cmmn.util.response.ResponseService;
+import com.account.book.cmmn.util.response.SingleResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,30 +18,32 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final ResponseService responseService;
 
     @PostMapping
-    public Integer addCategory( @RequestBody CategoryDTO categoryDTO ){
-        return categoryService.addCategory( categoryDTO );
+    public SingleResult<Integer> addCategory(@RequestBody CategoryDTO categoryDTO ){
+        return responseService.getSingleResult(categoryService.addCategory( categoryDTO ));
     }
 
     @GetMapping
-    public List<CategoryDTO> selectCategory( MenuCategoryDTO dto ){
-        return categoryService.selectByPairSn( dto );
+    public ListResult<CategoryDTO> selectCategory(MenuCategoryDTO dto ){
+        return responseService.getListResult(categoryService.selectByPairSn( dto ));
     }
 
     @PutMapping
-    public int updateCategory( CategoryDTO categoryDTO ){
-        return categoryService.updateCategory( categoryDTO );
+    public SingleResult<Integer> updateCategory( CategoryDTO categoryDTO ){
+        return responseService.getSingleResult(categoryService.updateCategory( categoryDTO ));
     }
 
     @DeleteMapping
-    public void deleteCategory( @RequestParam Integer categorySn ){
+    public CommonResult deleteCategory(@RequestParam Integer categorySn ){
         categoryService.deleteCategory( categorySn );
+        return responseService.getSuccessResult();
     }
 
     @PostMapping("/menu")
-    public Integer registeredMenu( @RequestBody MenuCategoryDTO menuCategoryDTO ){
-        return categoryService.registeredMenu( menuCategoryDTO );
+    public SingleResult<Integer> registeredMenu( @RequestBody MenuCategoryDTO menuCategoryDTO ){
+        return responseService.getSingleResult(categoryService.registeredMenu( menuCategoryDTO ));
     }
 
 }

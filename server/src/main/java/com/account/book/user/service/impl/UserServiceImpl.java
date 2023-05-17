@@ -1,6 +1,6 @@
 package com.account.book.user.service.impl;
 
-import com.account.book.cmmn.util.CommonUtil;
+import com.account.book.cmmn.util.cmm.CommonUtil;
 import com.account.book.user.dao.UserDAO;
 import com.account.book.user.service.UserService;
 import com.account.book.user.dto.UserDTO;
