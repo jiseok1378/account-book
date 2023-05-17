@@ -20,7 +20,8 @@
     "paths": {
       "@/*": [
         "src/*"
-      ]
+      ],
+      "vue-styled-components" : ["src/@types/vue-styled-components.d.ts"]
     },
     "lib": [
       "esnext",
@@ -38,5 +39,5 @@
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
 }

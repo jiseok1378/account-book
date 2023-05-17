@@ -1,18 +1,20 @@
 <template>
   <div id="app">
+    <StyledComponent>BBB</StyledComponent>
     <router-view/>
   </div>
 </template>
 
 <script lang="ts">
-import {Component, Vue} from 'vue-property-decorator';
-
-@Component({
-
+import { StyledComponent } from './styled-components/Test'
+import { defineComponent } from 'vue'
+export default defineComponent({
+  components: {
+    StyledComponent
+  }
 })
-
-export default class App extends Vue {}
 </script>
+
 <style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
