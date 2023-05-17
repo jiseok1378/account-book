@@ -1,8 +1,8 @@
 # DB 설정
 spring:
   datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/acbook
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:postgresql://localhost:5432/acbook
     username: acbook
     password: acbook
 
@@ -13,3 +13,13 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true # DB -> Java로 매핑될 때 user_id => userId 로 변환해주는 옵션
   type-handlers-package: com.account.book.cmmn.config.handler
+
+logging:
+  level:
+    jdbc:
+      sqlonly: off
+      sqltiming: info
+      resultsettable: info
+      audit: off
+      resultset: off
+      connection: off

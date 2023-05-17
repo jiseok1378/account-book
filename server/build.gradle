@@ -54,6 +54,11 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok' // 테스트 의존성 추가
     /* Test 설정: E */
 
+    /* Log 설정 : S */
+    implementation group: 'org.bgee.log4jdbc-log4j2', name:'log4jdbc-log4j2-jdbc4.1', version: '1.16'
+    /* Log 설정 : E */
+
+
 }
 
 test {
