@@ -81,5 +81,6 @@
         FROM TB_CATEGORY c
         INNER JOIN TB_MENU_CATEGORY_RELATION m ON m.CATEGORY_SN = c.CATEGORY_SN AND MENU_SN = #{menuSn}
         WHERE m.MENU_SN = #{menuSn} AND c.PAIR_SN = #{pairSn}
+        GROUP BY c.CATEGORY_SN
     </select>
 </mapper>
