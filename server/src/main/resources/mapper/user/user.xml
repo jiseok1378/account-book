@@ -30,10 +30,12 @@
         </selectKey>
     </insert>
     <delete id="deleteUser" parameterType="java.lang.Integer">
-        DELETE
-        FROM TB_USER
-        WHERE
-            USER_SN = #{0}
+        <if test="_parameter != null">
+            DELETE
+            FROM TB_USER
+            WHERE
+                USER_SN = #{0}
+        </if>
     </delete>
     <select id="findAllUser" resultType="com.account.book.user.dto.UserDTO">
         SELECT * FROM TB_USER

@@ -41,9 +41,6 @@
         UPDATE TB_PAIR
         SET ACCEPT = #{accept}
         WHERE PAIR_SN = #{pairSn}
-        <selectKey keyProperty="pairSn" resultType="java.lang.Integer" order="AFTER">
-            SELECT PAIR_SN FROM TB_PAIR WHERE PAIR_SN = #{pairSn}
-        </selectKey>
     </update>
 
     <delete id="deletePair" parameterType="java.lang.Integer">

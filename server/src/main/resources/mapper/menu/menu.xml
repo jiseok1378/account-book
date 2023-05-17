@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+    [템플릿 설명]
+    - 해당 파일은 SQL 문을 작성하는 곳입니다.
+-->
+<mapper namespace="com.account.book.menu.dao.MenuDAO">
+
+    <insert id="addMenu" parameterType="com.account.book.menu.dto.MenuDTO">
+        INSERT INTO TB_MENU(MENU_NM, UPPER_MENU_SN, PAIR_SN) VALUES (
+                                                            #{menuNm}
+                                                          , #{upperMenuSn}
+                                                          , #{pairSn}
+                                                        )
+        <selectKey resultType="java.lang.Integer" keyProperty="menuSn" order="AFTER">
+            SELECT currval(pg_get_serial_sequence('TB_MENU', 'menu_sn'))
+        </selectKey>
+    </insert>
+    <select id="selectByPairSn" parameterType="java.lang.Integer" resultType="com.account.book.menu.dto.MenuDTO">
+        SELECT * FROM TB_MENU WHERE pairSn = #{0}
+    </select>
+
+    <select id="selectByMenuSn" parameterType="java.lang.Integer" resultType="com.account.book.menu.dto.MenuDTO">
+        SELECT * FROM TB_MENU WHERE MENU_SN = #{0}
+    </select>
+
+    <update id="updateMenu" parameterType="com.account.book.menu.dto.MenuDTO">
+        <if test="menuSn != null">
+            UPDATE TB_MENU
+            SET
+                <if test="menuNm != null">MENU_NM = #{menuNm} </if>
+                <if test="upperMenuSn != null">, UPPER_MENU_SN = #{upperMenuSn} </if>
+            WHERE MENU_SN = #{menuSn}
+        </if>
+    </update>
+
+    <delete id="deleteMenu" parameterType="java.lang.Integer">
+        <if test="_parameter != null">
+            DELETE FROM TB_MENU
+            WHERE MENU_SN = #{0}
+        </if>
+    </delete>
+</mapper>

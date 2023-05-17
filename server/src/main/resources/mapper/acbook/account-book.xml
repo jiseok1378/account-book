@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+    [템플릿 설명]
+    - 해당 파일은 SQL 문을 작성하는 곳입니다.
+-->
+<mapper namespace="com.account.book.acbook.dao.AccountBookDAO">
+
+    <insert id="addAccountBook" parameterType="com.account.book.acbook.dto.AccountBookDTO">
+        INSERT INTO TB_ACCOUNT_BOOK
+            (
+                CATEGORY_SN
+                , PRICE
+                , PLACE
+                <if test="otherData != null">, OTHER_DATA </if>
+            )
+        VALUES
+            (
+                #{categorySn}
+                , #{price}
+                , #{place}
+                <if test="otherData != null">, #{otherData} </if>
+            )
+        <selectKey resultType="java.lang.Integer" keyProperty="abSn" order="AFTER">
+            SELECT currval(pg_get_serial_sequence('TB_ACCOUNT_BOOK', 'ab_sn'))
+        </selectKey>
+    </insert>
+
+    <update id="updateAccountBook" parameterType="com.account.book.acbook.dto.AccountBookDTO">
+        <if test="abSn != null">
+            UPDATE TB_ACCOUNT_BOOK
+            SET
+                <if test="categorySn != null"> CATEGORY_SN = #{categorySn} </if>
+                <if test="price!=null"> , PRICE = #{price} </if>
+                <if test="place!=null"> , PLACE = #{place} </if>
+                <if test="otherData!=null"> , OTHER_DATA = #{otherData} </if>
+            WHERE
+                AB_SN = #{abSn}
+        </if>
+    </update>
+
+    <delete id="deleteAccountBook" parameterType="java.lang.Integer">
+        <if test="_parameter != null">
+            DELETE FROM TB_ACCOUNT_BOOK WHERE AB_SN = #{0}
+        </if>
+    </delete>
+
+</mapper>

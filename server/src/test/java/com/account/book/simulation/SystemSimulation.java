@@ -1,9 +1,15 @@
 
 package com.account.book.simulation;
 
+import com.account.book.acbook.dto.AccountBookDTO;
+import com.account.book.category.dto.CategoryDTO;
+import com.account.book.category.dto.MenuCategoryDTO;
+import com.account.book.menu.dto.MenuDTO;
 import com.account.book.pair.dto.AcceptStatus;
 import com.account.book.pair.dto.PairDTO;
 import com.account.book.user.dto.UserDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 
@@ -15,8 +21,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.MultiValueMapAdapter;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -43,6 +58,11 @@ public class SystemSimulation {
 
     private static Integer user1Sn;
     private static Integer user2Sn;
+    private static Integer pairSn;
+    private static Integer categorySn;
+    private static Integer lowerMenuSn;
+    private static Integer upperMenuSn;
+    private static final String updatedCategoryNm = "네가 바로 코난이냐?";
 
     @BeforeEach
     public void setup() {
@@ -50,6 +70,7 @@ public class SystemSimulation {
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))  // 필터 추가
                 .alwaysDo(print())
                 .build();
+
     }
 
     @Test
@@ -109,7 +130,7 @@ public class SystemSimulation {
                 .content(mapper.writeValueAsString(pairDTO))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), Integer.class);
-
+        pairSn = insertedPairSn;
         PairDTO selectedPair = mapper.readValue(mvc.perform(get("/api/pair")
                 .param("pairSn", Integer.toString(insertedPairSn))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -131,6 +152,176 @@ public class SystemSimulation {
         System.out.println(selectedPair.getPairMsg() + ":" + selectedPairAfterAccept.getAccept());
     }
 
+    @DisplayName("카테고리 생성, 업데이트, 조회")
+    @Test
+    void c() throws Exception {
+        CategoryDTO categoryDTO = new CategoryDTO();
+        categoryDTO.setCategoryNm("내 이름은 카테고리. 탐정이죠.");
+        categoryDTO.setPairSn( pairSn );
+        categorySn =  mapper.readValue(mvc.perform(
+                post("/api/category")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(categoryDTO))
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(),Integer.class);
+
+        assertNotNull( categorySn );
+
+        categoryDTO.setCategorySn( categorySn );
+        categoryDTO.setCategoryNm( updatedCategoryNm );
+
+        MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
+        valueMap.put("categoryNm", Collections.singletonList(categoryDTO.getCategoryNm()));
+        valueMap.put("categorySn", Collections.singletonList(Integer.toString(categoryDTO.getCategorySn())));
+        valueMap.put("otherColumn", Collections.singletonList(categoryDTO.getOtherColumn()));
+
+        mvc.perform(
+                put("/api/category")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .params(valueMap)
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        List<CategoryDTO> updated = mapper.readValue(mvc.perform(
+                get("/api/category")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("pairSn", Integer.toString(pairSn))
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), new TypeReference<>(){});
+
+        assertEquals(updatedCategoryNm, updated.get(0).getCategoryNm());
+    }
+
+    @DisplayName("메뉴 생성, 업데이트, 조회")
+    @Test
+    void d() throws Exception {
+        MenuDTO upperMenu = new MenuDTO();
+        upperMenu.setMenuNm("상위 메뉴");
+        upperMenu.setPairSn( pairSn );
+
+        upperMenuSn = mapper.readValue(
+                mvc.perform(post("/api/menu")
+                        .content(mapper.writeValueAsString(upperMenu))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString()
+                , Integer.class );
+
+        MenuDTO lowerMenu = new MenuDTO();
+        lowerMenu.setMenuNm("하위 메뉴");
+        lowerMenu.setUpperMenuSn(upperMenuSn);
+        lowerMenu.setPairSn(pairSn);
+
+        lowerMenuSn =  mapper.readValue(
+                mvc.perform(post("/api/menu")
+                        .content(mapper.writeValueAsString(lowerMenu))
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk()).andReturn().getResponse().getContentAsString()
+                , Integer.class );
+
+        LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+
+        String updateMenuNm = "상위 메뉴 이름 업데이트";
+        upperMenu.setMenuNm(updateMenuNm);
+        map.put("menuNm", Collections.singletonList(upperMenu.getMenuNm()));
+        map.put("menuSn", Collections.singletonList(Integer.toString(upperMenuSn)));
+
+        mvc.perform(put("/api/menu")
+                .params(map)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+
+        MenuDTO updatedMenu = mapper.readValue(
+                mvc.perform(get("/api/menu")
+                        .param("menuSn", Integer.toString(upperMenuSn))
+                        .contentType(MediaType.APPLICATION_JSON)).andReturn().getResponse().getContentAsString(), MenuDTO.class);
+
+        assertEquals(updatedMenu.getMenuNm(), updateMenuNm);
+    }
+
+    @DisplayName("카테고리 메뉴 등록 및 등록된 카테고리 조회")
+    @Test
+    void e() throws Exception {
+        MenuCategoryDTO menuCategoryDTO = new MenuCategoryDTO();
+        menuCategoryDTO.setCategorySn( categorySn );
+        menuCategoryDTO.setMenuSn( upperMenuSn );
+        menuCategoryDTO.setPairSn( pairSn );
+        Integer mcrSn = mapper.readValue(mvc.perform(
+                post("/api/category/menu")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(menuCategoryDTO))
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), Integer.class);
+
+        List<CategoryDTO> categoryDTOS = mapper.readValue(mvc.perform(
+                get("/api/category")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("pairSn", Integer.toString(pairSn))
+                        .param("menuSn", Integer.toString(upperMenuSn))
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), new TypeReference<>(){});
+
+        assertEquals(updatedCategoryNm, categoryDTOS.get(0).getCategoryNm());
+    }
+
+    @DisplayName("가계부 등록 및 업데이트")
+    @Test
+    void f() throws Exception {
+        AccountBookDTO accountBookDTO = new AccountBookDTO();
+        accountBookDTO.setCategorySn( categorySn );
+        accountBookDTO.setPlace("장소");
+        accountBookDTO.setPrice(20);
+        Integer abSn = mapper.readValue(mvc.perform(
+                post("/api/account/book")
+                        .content(mapper.writeValueAsString(accountBookDTO))
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), Integer.class);
+
+        mapper.readValue(mvc.perform(
+                put("/api/account/book")
+                        .content(mapper.writeValueAsString(accountBookDTO))
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), Integer.class);
+    }
+
+    @DisplayName("카테고리 재조회")
+    @Test
+    void g() throws Exception {
+        MenuCategoryDTO menuCategoryDTO = new MenuCategoryDTO();
+        menuCategoryDTO.setCategorySn( categorySn );
+        menuCategoryDTO.setMenuSn( upperMenuSn );
+        menuCategoryDTO.setPairSn( pairSn );
+        Integer mcrSn = mapper.readValue(mvc.perform(
+                post("/api/category/menu")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(menuCategoryDTO))
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), Integer.class);
+
+        List<CategoryDTO> categoryDTOS = mapper.readValue(mvc.perform(
+                get("/api/category")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("pairSn", Integer.toString(pairSn))
+                        .param("menuSn", Integer.toString(upperMenuSn))
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), new TypeReference<>(){});
+
+        assertEquals(1, categoryDTOS.get(0).getAccountBooks().size());
+    }
+
+    @DisplayName("메뉴 삭제")
+    @Test
+    void x() throws Exception {
+        mvc.perform(
+                delete("/api/menu")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("menuSn", Integer.toString(lowerMenuSn))
+        ).andExpect(status().isOk());
+    }
+
+
+    @DisplayName("카테고리 삭제")
+    @Test
+    void y() throws Exception {
+       mvc.perform(
+                delete("/api/category")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("categorySn", Integer.toString(categorySn))
+        ).andExpect(status().isOk());
+    }
 
     @DisplayName("유저 삭제")
     @Test

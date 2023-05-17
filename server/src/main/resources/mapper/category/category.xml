@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+    [템플릿 설명]
+    - 해당 파일은 SQL 문을 작성하는 곳입니다.
+-->
+<mapper namespace="com.account.book.category.dao.CategoryDAO">
+
+    <insert id="addCategory" parameterType="com.account.book.category.dto.CategoryDTO">
+        INSERT INTO TB_CATEGORY
+            (
+                PAIR_SN
+                , CATEGORY_NM
+                <if test="otherColumn != null">
+                    , OTHTER_COLUMN
+                </if>
+            )
+            VALUES
+            (
+                #{pairSn}
+                , #{categoryNm}
+                <if test="otherColumn != null">
+                    , #{otherColumn}
+                </if>
+            )
+            <selectKey resultType="java.lang.Integer" keyProperty="categorySn" order="AFTER">
+                SELECT currval(pg_get_serial_sequence('TB_CATEGORY', 'category_sn'))
+            </selectKey>
+    </insert>
+
+    <delete id="deleteCategory" parameterType="java.lang.Integer">
+        <if test="_parameter != null">
+            DELETE
+            FROM TB_CATEGORY
+            WHERE
+                CATEGORY_SN = #{0}
+        </if>
+    </delete>
+
+    <update id="updateCategory" parameterType="com.account.book.category.dto.CategoryDTO">
+        <if test="categorySn != null">
+            UPDATE TB_CATEGORY
+            SET
+                <if test="categoryNm != null">
+                    CATEGORY_NM = #{categoryNm}
+                </if>
+                <if test="otherColumn != null">
+                    OTHTER_COLUMN = #{otherColumn}
+                </if>
+            WHERE
+                CATEGORY_SN = #{categorySn}
+        </if>
+    </update>
+
+    <select id="selectByPairSn" parameterType="java.lang.Integer" resultMap="categoryMap">
+        SELECT * FROM TB_CATEGORY WHERE PAIR_SN = #{0}
+    </select>
+
+    <insert id="registeredMenu" parameterType="com.account.book.category.dto.MenuCategoryDTO">
+        INSERT INTO TB_MENU_CATEGORY_RELATION(MENU_SN, CATEGORY_SN) VALUES (#{menuSn}, #{categorySn})
+        <selectKey resultType="java.lang.Integer" keyProperty="mcrSn" order="AFTER">
+            SELECT currval(pg_get_serial_sequence('TB_MENU_CATEGORY_RELATION', 'mcr_sn'))
+        </selectKey>
+    </insert>
+
+    <resultMap id="categoryMap" type="com.account.book.category.dto.CategoryDTO">
+        <result property="categorySn" column="CATEGORY_SN" />
+        <result property="pairSn" column="PAIR_SN" />
+        <result property="categoryNm" column="CATEGORY_NM" />
+        <result property="otherColumn" column="OTHER_COLUMN" />
+        <collection property="accountBooks" column="CATEGORY_SN" javaType="java.util.List" ofType="com.account.book.acbook.dto.AccountBookDTO" select="selectAccountBookByCategorySn"/>
+    </resultMap>
+
+    <select id="selectAccountBookByCategorySn" parameterType="java.lang.Integer" resultType="com.account.book.acbook.dto.AccountBookDTO">
+        SELECT * FROM TB_ACCOUNT_BOOK WHERE CATEGORY_SN = #{0}
+    </select>
+
+    <select id="selectByMenuSnAndCategorySn" parameterType="com.account.book.category.dto.MenuCategoryDTO" resultMap="categoryMap">
+        SELECT c.*
+        FROM TB_CATEGORY c
+        INNER JOIN TB_MENU_CATEGORY_RELATION m ON m.CATEGORY_SN = c.CATEGORY_SN AND MENU_SN = #{menuSn}
+        WHERE m.MENU_SN = #{menuSn} AND c.PAIR_SN = #{pairSn}
+    </select>
+</mapper>
