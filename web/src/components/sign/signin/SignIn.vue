@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>User Id: <input v-model="user.userId" /></div> 
+    <div>User Id: <v-text-field v-model="user.userId" /></div> 
     <div><button @click="submit">sumbit</button></div>
     <div>{{res}}</div>
   </div>

@@ -1,14 +1,12 @@
 <template>
-  <div class="home">
-    Hello Account Book!
+  <div class="home" style="padding: 20px;">
+
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue } from "vue-property-decorator";
 @Component({
-  components: {
-  },
 
 })
 export default class HomeView extends Vue {}

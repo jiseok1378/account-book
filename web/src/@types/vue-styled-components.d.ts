@@ -44,7 +44,7 @@ declare module 'vue-styled-components' {
     export type Component = HTMLElements | keyof HTMLElements | Vue.Component | Vue.VueConstructor
   
     export type Styled = StyledComponentElements & {
-      <T extends Component, Props extends VueProps>(Component: T, props?: Props): (str: TemplateStringsArray, ...placeholders: ((props: PropsType<Props>) => string | String | { toString: () => string | String })[]) => StyledComponent<Props>
+      <T extends Component, Props extends VueProps>(Component: T, props?: Props): (str: TemplateStringsArray, ...placeholders: ((props: PropsType<Props>) => string | string | { toString: () => string | string })[]) => StyledComponent<Props>
     }
   
     export interface HTMLElements {
