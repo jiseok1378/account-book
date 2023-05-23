@@ -19,16 +19,21 @@ services:
       - ./postgres-data:/var/lib/postgresql/data
       - ./postgres-sql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  # web:
-  #   build:
-  #     context: ./web
-  #     dockerfile: DockerFile
-  #   restart: "on-failure"
-  #   hostname: localhost
-  #   volumes:
-  #     - ./web:/front
-  #   ports:
-  #     - 8080:8080
-  #     - 8081:8081
-  #   stdin_open: true
-  #   tty: true
+  web:
+    build:
+      context: ./web
+      dockerfile: DockerFile
+    restart: "on-failure"
+    hostname: localhost
+    volumes:
+      - ./web:/front
+    environment:
+      - NODE_ENV=development
+    ports:
+      - 80:80
+    command: >
+      sh -c "
+      yarn &&
+      yarn serve"
+    stdin_open: true
+    tty: true
