@@ -1,0 +1,50 @@
+version: '3.3'
+
+volumes:
+  dev_db:
+  media-data-volume: 
+
+services:
+  postgres:
+    image: postgres
+    restart: on-failure
+    ports:
+      - 5432:5432
+    #TODO: .env 파일로 변경 
+    environment:
+      - POSTGRES_USER=acbook
+      - POSTGRES_PASSWORD=acbook
+      - POSTGRES_DB=acbook
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      - ./postgres-sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  # web:
+  #   build:
+  #     context: ./web
+  #     dockerfile: DockerFile
+  #   restart: "on-failure"
+  #   hostname: localhost
+  #   volumes:
+  #     - ./web:/front
+  #   environment:
+  #     - NODE_ENV=development
+  #   ports:
+  #     - 80:80
+  #   command: >
+  #     sh -c "
+  #     yarn &&
+  #     yarn serve"
+  #   stdin_open: true
+  #   tty: true
+
+  # server:
+  #   image: gradle:6.9.2-jdk11-alpine
+  #   restart: on-failure
+  #   ports:
+  #     - 8080:8080
+  #   volumes:
+  #     - ./server:/back
+  #   working_dir: /back
+  #   command: >
+  #     sh -c "cd /back && gradle bootRun"

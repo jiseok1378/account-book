@@ -37,3 +37,14 @@ services:
       yarn serve"
     stdin_open: true
     tty: true
+
+  server:
+    image: gradle:6.9.2-jdk11-alpine
+    restart: on-failure
+    ports:
+      - 8080:8080
+    volumes:
+      - ./server:/back
+    working_dir: /back
+    command: >
+      sh -c "cd /back && gradle bootRun"
