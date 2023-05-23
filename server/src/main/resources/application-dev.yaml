@@ -1,0 +1,25 @@
+# DB 설정
+spring:
+  datasource:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:postgresql://postgres:5432/acbook
+    username: acbook
+    password: acbook
+
+# Mybatis 설정
+mybatis:
+  type-aliases-package: com.account.book # 이렇게 하면 com.account.book 패키지 하위에 있는 모든 타입들이 들어간다.
+  mapper-locations: classpath:mapper/**/*.xml # Mybatis xml 파일 위치 설정
+  configuration:
+    map-underscore-to-camel-case: true # DB -> Java로 매핑될 때 user_id => userId 로 변환해주는 옵션
+  type-handlers-package: com.account.book.cmmn.config.handler
+
+logging:
+  level:
+    jdbc:
+      sqlonly: off
+      sqltiming: info
+      resultsettable: info
+      audit: off
+      resultset: off
+      connection: off
