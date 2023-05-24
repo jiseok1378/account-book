@@ -45,7 +45,8 @@ services:
     networks:
       - ab_net
     depends_on:
-      - server
+      - app-server-1
+      - app-server-2
 
   app-web-2:
     container_name: app-web-2
@@ -70,7 +71,8 @@ services:
     networks:
       - ab_net
     depends_on:
-      - server
+      - app-server-1
+      - app-server-2
 
 
   app-server-1:
@@ -123,8 +125,8 @@ services:
     ports:
       - 80:80
     depends_on:
-      - app-server-1
-      - web  
+      - app-web-1  
+      - app-web-2  
     networks:
       - ab_net
 
