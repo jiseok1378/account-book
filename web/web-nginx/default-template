@@ -1,5 +1,5 @@
 server {
-  listen 81;
+  listen ${WEB_PORT};
 
   location / {
     root  /user/share/nginx/html;

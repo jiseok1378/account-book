@@ -6,6 +6,9 @@ spring:
     username: acbook
     password: acbook
 
+server:
+  port: ${WAS_PORT}
+
 # Mybatis 설정
 mybatis:
   type-aliases-package: com.account.book # 이렇게 하면 com.account.book 패키지 하위에 있는 모든 타입들이 들어간다.
