@@ -6,10 +6,10 @@ volumes:
 
 services:
   postgres:
-    image: postgres
+    image: postgres:15.3-alpine3.18
     restart: on-failure
     ports:
-      - 5432:5432
+      - 15432:5432
     #TODO: .env 파일로 변경 
     environment:
       - POSTGRES_USER=acbook
