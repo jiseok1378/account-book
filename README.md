@@ -21,7 +21,40 @@
 
 ## 2. Setting project environments
 
+<br />  
+
+### 2-1. Common
+
+> docker & docker-compose install
+
+- Install Docker
+
+  ```bash
+  $ sudo apt update
+  $ sudo apt install apt-transport-https ca-certificates curl software-properties-common
+  $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  $ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" 
+  $ sudo apt update
+  $ sudo apt install docker-ce
+  $ sudo systemctl status docker
+  # Active: active (running)
+  ```
+- Install Docker Compose
+
+  ```bash
+  $  sudo curl -L "https://github.com/docker/compose/releases/download/v2.5.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  $ sudo chmod +x /usr/local/bin/docker-compose
+  $ docker-compose -v
+  ```
+- Create Postgres Container
+
+  ```bash
+  $ sudo docker-compose up -d
+  ```
+
 <br />
+
+### 2-2. Local 
 
 > web
 
@@ -78,37 +111,50 @@
 
 > postgres
 
-- Install Docker
+- docker-compse 
 
   ```bash
-  $ sudo apt update
-  $ sudo apt install apt-transport-https ca-certificates curl software-properties-common
-  $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-  $ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" 
-  $ sudo apt update
-  $ sudo apt install docker-ce
-  $ sudo systemctl status docker
-  # Active: active (running)
+  $ docker-compose up -d
   ```
-- Install Docker Compose
+
+<br />
+
+### 2-3. Docker Development
+
+#### **🚨 Improtant 🚨**
+
+**In the Docker environment, Vue hot reload works only on the Linux operating system. If running on Windows, please install and use docker-compse on WSL Ubuntu or other Linux operating systems.**
+
+> Init 
+
+- docker-compose
 
   ```bash
-  $  sudo curl -L "https://github.com/docker/compose/releases/download/v2.5.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-  $ sudo chmod +x /usr/local/bin/docker-compose
-  $ docker-compose -v
+  $ sudo ./docker-compose-dev up -d
   ```
-- Create Postgres Container
+
+> Rebuild project
+  
+- docker-compose 
 
   ```bash
-  $ sudo docker-compose up -d
+  $ sudo ./docker-compose-dev restart
   ```
-
 
 --- 
 
 <br />
 
 ## 3. Build project
+
+> Build docker container 
+
+- docker-compose 
+
+  ```bash
+  $ sudo ./docker-compose-prd up -d
+  ```
+
 
 <br />
 
@@ -157,8 +203,6 @@
 
 - Web socket client
   - web socket client
-
-> TODO
-
+  
 - Nginx
   - load-balancer, reverse-proxy
