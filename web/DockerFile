@@ -1,11 +1,12 @@
-FROM node:18.16
+FROM node:18.16-alpine3.17
 
-RUN apt-get update \ 
-    && rm -rf /var/lib/apt/list/*
+# RUN apt-get update \ 
+#     && rm -rf /var/lib/apt/list/*
 
 WORKDIR /front
-ENV PATH /front/node_modules:$PATH
+ENV PATH /front/node_modules/.bin:$PATH
 
 RUN npm install -g @vue/cli
+
 COPY package*.json /front/
 RUN yarn install

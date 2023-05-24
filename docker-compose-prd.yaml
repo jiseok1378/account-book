@@ -6,8 +6,8 @@ volumes:
 
 services:
   postgres:
-    container_name: postgres 
-    image: postgres
+    container_name: postgres
+    image: postgres:15.3-alpine3.18
     restart: on-failure
     ports:
       - 5432:5432
@@ -22,46 +22,65 @@ services:
     networks:
       - ab_net
 
-  web:
-    container_name: web
+  app-web:
+    container_name: app-web
     build:
       context: ./web
-      dockerfile: DockerFile
+      dockerfile: DockerFile.prd
     restart: "on-failure"
     hostname: localhost
     volumes:
       - ./web:/front
     environment:
-      - NODE_ENV=docker
+      - NODE_ENV=production
     ports:
-      - 80:80
-    command: >
-      sh -c "
-      yarn &&
-      yarn serve"
+      - 81:81
+    # command: >
+    #   sh -c "
+    #   yarn &&
+    #   yarn build &&
+    #   nginx -g \"daemon off;\"
+    #   "
     stdin_open: true
     tty: true
     networks:
       - ab_net
+    depends_on:
+      - server
 
-  server:
-    container_name: server
+  app-server:
+    container_name: app-server
     image: gradle:6.9.2-jdk11-alpine
     restart: on-failure
-    ports:
-      - 8080:8080
+    # ports:
+    #   - 8080:8080
     volumes:
       - ./server:/back
     working_dir: /back
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=prd
     command: >
       sh -c "cd /back && gradle bootRun"
     networks:
       - ab_net
     depends_on:
       - postgres
-      
+  
+  nginx: 
+    container_name: nginx
+    image: nginx:stable-alpine
+    volumes: 
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    command: >
+      sh -c "nginx -g \"daemon off;\""
+    ports:
+      - 80:80
+    depends_on:
+      - app-server  
+      - web  
+    networks:
+      - ab_net
+
 networks: 
   ab_net:
     driver: bridge

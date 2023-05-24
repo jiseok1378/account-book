@@ -1,0 +1,20 @@
+FROM node:18.16-alpine3.17 as build-stage
+
+# RUN apt-get update \ 
+#     && rm -rf /var/lib/apt/list/*
+
+WORKDIR /front
+ENV PATH /front/node_modules/.bin:$PATH
+
+RUN npm install -g @vue/cli
+
+COPY . /front/
+RUN yarn install
+RUN yarn build
+
+FROM nginx:stable-alpine as production-stage
+COPY  ./web-nginx/default.conf /etc/nginx/conf.d/default.conf
+
+COPY --from=build-stage /front/dist /user/share/nginx/html
+EXPOSE 81
+CMD ["nginx", "-g", "daemon off;"]
