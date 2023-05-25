@@ -1,0 +1,20 @@
+FROM gradle:6.9.2-jdk11-alpine
+
+# utils
+RUN apk add openssh \
+    && apk add nano
+
+
+#Enable ssh login
+
+RUN apk add openrc && rc-update add sshd \
+    && sed -i '/^#Port 22/s/^#//' /etc/ssh/sshd_config \
+    && sed -i '/^#PasswordAuthentication/s/^#//' /etc/ssh/sshd_config \
+    && sed -i '/^#PermitEmptyPasswords no/s/^#PermitEmptyPasswords no/PermitEmptyPasswords yes/' /etc/ssh/sshd_config \
+    && sed -i '/^#PermitRootLogin prohibit-password/s/^#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config \
+    && echo "root:Docker!" | chpasswd \
+    && ssh-keygen -A
+
+COPY entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh

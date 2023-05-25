@@ -1,9 +1,5 @@
 version: '3.3'
 
-volumes:
-  dev_db:
-  media-data-volume: 
-
 services:
   postgres:
     container_name: postgres
@@ -77,19 +73,22 @@ services:
 
   app-server-1:
     container_name: app-server-1
-    image: gradle:6.9.2-jdk11-alpine
+    build:
+      context: ./server
+      dockerfile: DockerFile.prd
     restart: on-failure
     volumes:
       - ./server:/back
       - /back/.gradle
       - /back/build
+    ports: 
+      - 10001:22
     working_dir: /back
     environment:
       - SPRING_PROFILES_ACTIVE=prd
       - WAS_PORT=8081
       - VERSION=1.0
-    command: >
-      sh -c "cd /back && gradle bootJar && java -jar build/libs/server-1.0.jar"
+    entrypoint: ["/entrypoint.sh"]
     networks:
       - ab_net
     depends_on:
