@@ -1,9 +1,5 @@
 version: '3.3'
 
-volumes:
-  dev_db:
-  media-data-volume: 
-
 services:
   postgres:
     image: postgres:15.3-alpine3.18

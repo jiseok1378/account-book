@@ -1,0 +1,11 @@
+version: '3.3'
+
+services:
+  jenkins:
+    container_name: jiseok1378/ab-jenkins
+    image: jenkins/jenkins:lts
+    restart: "on-failure"
+    ports:
+      - 20000:8080
+    volumes:
+      - ./jenkins-data:/var/jenkins_home
