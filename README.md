@@ -385,7 +385,9 @@
 
 > 빌드 환경 네트워크 구성도
 
-![](read-me/Network.png)
+- 네트워크 구성도
+
+  ![](read-me/Network.png)
 
 <br />
 
@@ -399,7 +401,7 @@
   - 백엔드 서버 프레임워크 
 
 - Spring web soket
-  - 페어 메세지 웹소켓 전성
+  - 페어 메세지 웹소켓 전송
 
 - Mybatis
   - Java ORM 기술 
