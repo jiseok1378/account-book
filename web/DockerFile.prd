@@ -36,6 +36,8 @@ COPY --from=build-stage /front/entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
 
+RUN apk add dos2unix && dos2unix /entrypoint.sh
+
 EXPOSE ${WEB_PORT}
 
 # CMD ["nginx", "-g", "daemon off;"]
