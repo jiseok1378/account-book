@@ -1,5 +1,6 @@
 node{
     stage('CHECK IS LIVE CONTAINER'){
-        echo "ssh"
+        echo "ssh root@app-web-1 'echo web1'"
+        echo "ssh root@app-web-2 'echo web2'"
     }
 }
