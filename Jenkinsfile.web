@@ -2,5 +2,7 @@ node{
     stage('CHECK IS LIVE CONTAINER'){
         sh "ssh root@app-web-1 -o StrictHostKeyChecking=no 'echo web1'"
         sh "ssh root@app-web-2 -o StrictHostKeyChecking=no 'echo web2'"
+        sh "ssh root@app-server-1 -o StrictHostKeyChecking=no 'echo server1'"
+        sh "ssh root@app-server-2 -o StrictHostKeyChecking=no 'echo server2'"
     }
 }
