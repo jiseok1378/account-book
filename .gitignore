@@ -1,4 +1,4 @@
 postgres-data
 .idea
-jenkins_home
-jenkins_home/**
+jenkins-data
+jenkins-data/**
