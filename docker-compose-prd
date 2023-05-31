@@ -1,3 +1,5 @@
 #!/bin/bash
 
+rm ~/.ssh/known_hosts
+
 docker-compose -f docker-compose-prd.yaml $@
