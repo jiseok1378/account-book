@@ -145,6 +145,7 @@ services:
     command: >
       sh -c "chmod 777 /var/lib/jenkins/build-script/* &&
       rm /var/lib/jenkins/.ssh/known_hosts &&
+      echo "$$(ssh-keyscan -t rsa,dsa github.com)" >> /var/lib/jenkins/.ssh/known_hosts &&
       service ssh restart &&
       service jenkins restart &&
       tail -f /var/log/jenkins/jenkins.log"
