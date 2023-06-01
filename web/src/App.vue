@@ -19,7 +19,7 @@
         target="_blank"
         text
       >
-        <span class="mr-2">LOGIN</span>
+        <span class="mr-2">LOGIN ACCOUNT</span>
         <v-icon>mdi-open-in-new</v-icon>
       </v-btn>
     </v-app-bar>
