@@ -4,7 +4,7 @@ node{
         sh "ssh root@app-web-2 -o StrictHostKeyChecking=no 'echo web2'"
     }
     stage('GIT PULL'){
-        sh "cd $HOME/account-book && git checkout origin main && git pull"
+        sh "cd $HOME/account-book && git fetch origin && git checkout main && git pull"
     }
     stage('BUILD AND DISTRIBUTION'){
         sh "/bin/bash /var/lib/jenkins/build-script/web.sh"
