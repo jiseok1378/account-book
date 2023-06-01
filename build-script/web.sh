@@ -14,11 +14,13 @@ function getSSHName(){
 }
 
 function build(){
+    echo
     echo '==================== BUILD WEB PROJECT [START] ===================='
     rm -rf ./dist
     yarn install && yarn build
     zip -r dist.zip ./dist
     echo '==================== BUILD WEB PROJECT [END] ===================='
+    echo
 }
 
 DISTRIBUTION_INNER_VAL=0
@@ -35,9 +37,19 @@ function distributionInner(){
         IS_SUCC=$(curl -s http://$(getFrontName $1):8$1)
         if [ ! -z "$IS_SUCC" ]
         then
-            scp ${SSH_OPT} ./dist.zip $(getSSHName "$1"):/
-            ssh ${SSH_OPT} $(getSSHName "$1") 'unzip -qq -o /dist.zip -d / && rm /dist.zip && cp -rf /dist/* /user/share/nginx/html && rm -rf /dist'
+            echo
+            echo
+            echo '==================== COPY DIST DIRECTORY [START] ===================='  
+            scp ${SSH_OPT} -v ./dist.zip $(getSSHName "$1"):/
+            echo '==================== COPY DIST DIRECTORY [END] ====================' 
+            echo
+            echo
+            echo '==================== UNZIP DIST DIRECTORY [START] ====================' 
+            ssh ${SSH_OPT} $(getSSHName "$1") 'unzip -o /dist.zip -d / && rm /dist.zip && cp -rf /dist/* /user/share/nginx/html && rm -rf /dist'
             echo "Success [$(getFrontName $1)]"
+            echo '==================== UNZIP DIST DIRECTORY [END] ====================' 
+            echo
+            echo
             break
         fi
         ((i++))
@@ -69,7 +81,6 @@ function distribution(){
         ((CURRENT_IDX++))
     done 
 }
-
 
 build
 distribution '1' '2'

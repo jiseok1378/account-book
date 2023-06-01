@@ -20,6 +20,8 @@ RUN apk add openssh \
 
 #Enable ssh login
 
+RUN apk add zip
+
 RUN apk add openrc && rc-update add sshd \
     && sed -i '/^#Port 22/s/^#//' /etc/ssh/sshd_config \
     && sed -i '/^#PasswordAuthentication/s/^#//' /etc/ssh/sshd_config \

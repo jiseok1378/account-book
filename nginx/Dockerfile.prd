@@ -1,12 +1,7 @@
-FROM gradle:6.9.2-jdk11-alpine
+FROM nginx:stable-alpine
 
-# utils
 RUN apk add openssh \
     && apk add nano
-
-RUN apk add zip
-
-#Enable ssh login
 
 RUN apk add openrc && rc-update add sshd \
     && sed -i '/^#Port 22/s/^#//' /etc/ssh/sshd_config \
