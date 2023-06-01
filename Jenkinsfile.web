@@ -4,7 +4,7 @@ node{
         sh "ssh root@app-web-2 -o StrictHostKeyChecking=no 'echo web2'"
     }
     stage('GIT PULL'){
-        git branch: 'main', url: 'git@github.com:jiseok1378/account-book.git'
+        sh "ch $HOME && git checkout origin/main && git pull"
     }
     stage('BUILD AND DISTRIBUTION'){
         sh "/bin/bash /var/lib/jenkins/build-script/web.sh"
