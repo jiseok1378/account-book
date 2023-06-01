@@ -30,16 +30,20 @@
   </v-app>
 </template>
 
-<script>
+<script lang="ts">
 
-export default {
+import {defineComponent} from 'vue' 
+export default defineComponent({
   name: 'App',
 
   components: {
   },
-
+  created(){
+    this.$cookies.set("1", "2")
+  },
   data: () => ({
+    
     //
   }),
-};
+});
 </script>
