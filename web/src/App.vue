@@ -19,7 +19,7 @@
         target="_blank"
         text
       >
-        <span class="mr-2">LOGIN ACCOUNT</span>
+        <span class="mr-2">LOGIN</span>
         <v-icon>mdi-open-in-new</v-icon>
       </v-btn>
     </v-app-bar>
@@ -30,16 +30,18 @@
   </v-app>
 </template>
 
-<script>
-
-export default {
+<script lang="ts">
+import VueCookies from "vue-cookies";
+import {defineComponent} from 'vue'
+export default defineComponent({
   name: 'App',
 
   components: {
   },
 
   data: () => ({
+    
     //
   }),
-};
+});
 </script>
