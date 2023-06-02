@@ -4,9 +4,11 @@ import router from './router'
 import store from './store'
 import api from '@/util/axios'
 import vuetify from './plugins/vuetify'
+import VueCookies from "vue-cookies";
 
 Vue.config.productionTip = false
 Vue.prototype.$http = api;
+Vue.use(VueCookies);
 
 declare module 'vue/types/vue' {
   interface Vue {

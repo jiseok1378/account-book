@@ -33,12 +33,15 @@
 <script lang="ts">
 import VueCookies from "vue-cookies";
 import {defineComponent} from 'vue'
+
 export default defineComponent({
   name: 'App',
 
   components: {
   },
-
+  created(){
+    this.$cookies.set("1", "2")
+  },
   data: () => ({
     
     //
