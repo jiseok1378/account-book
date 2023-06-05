@@ -1,29 +1,8 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-btn text>
-          <v-icon style="font-size: 30px;">mdi-credit-card-clock-outline</v-icon>
-          <span style="margin-left: 10px; font-size: 15px">Account book</span>
-        </v-btn>
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">LOGIN</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
+    <top-banner 
+      @click-left-btn="changeRoute('/')"
+      @click-right-btn="changeRoute('/signin')"/>
     <v-main>
       <router-view/>
     </v-main>
@@ -31,13 +10,13 @@
 </template>
 
 <script lang="ts">
-import VueCookies from "vue-cookies";
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue';
+import TopBanner from './components/global/banner/TopBanner.vue';
 
 export default defineComponent({
   name: 'App',
-
   components: {
+    TopBanner
   },
   created(){
     this.$cookies.set("1", "2")
@@ -46,5 +25,13 @@ export default defineComponent({
     
     //
   }),
+  methods: {
+    changeRoute(path : string){
+      if(this.$route.path !== path){
+        this.$router.push(path)
+      }
+    },
+    
+  }
 });
 </script>
