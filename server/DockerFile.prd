@@ -18,6 +18,12 @@ RUN apk add openrc && rc-update add sshd \
 
 COPY ./entrypoint.sh /entrypoint.sh
 
+
 RUN chmod +x /entrypoint.sh
 
+COPY . /back
+
+RUN cd /back && gradle bootJar 
+
 RUN apk add dos2unix && dos2unix /entrypoint.sh
+
