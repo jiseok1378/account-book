@@ -1,5 +1,5 @@
 <template>
-  <v-btn class="cmmn-btn" @click="click" :text="text" :href="href">
+  <v-btn :width="width" class="cmmn-btn" @click="click" :text="text" :href="href" :color="color">
     <slot></slot>
   </v-btn>
 </template>
@@ -10,6 +10,14 @@ import Vue from 'vue';
 
 export default Vue.extend({
     props:{
+        width: {
+            type: String,
+            default: undefined
+        },
+        color: {
+            type: String,
+            default : undefined
+        },
         href : {
             type: String,
             default : undefined
@@ -34,5 +42,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .cmmn-btn{
     text-transform: none !important;
+    font-size: 12px;
+    
 }
 </style>

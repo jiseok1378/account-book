@@ -1,16 +1,20 @@
 <template>
-  <div>
-    <div>User Id: <v-text-field v-model="user.userId" /></div> 
-    <div><button @click="submit">sumbit</button></div>
-    <div>{{res}}</div>
-  </div>
+  <flex-container >
+    <logo-container title="WooGa에 로그인" />
+    <sign-card />
+  </flex-container>
 </template>
 
 <script lang="ts">
+import SignCard from "@/components/sign/SignCard.vue";
+
+import LogoContainer from "@/components/sign/LogoContainer.vue";
+import { FlexContainer } from "@/styled-components/StyledComponents";
 import { defineComponent } from "vue";
 
 
 export default defineComponent({
+  components: { SignCard, FlexContainer, LogoContainer },
   data(){
     return {
       user:{
