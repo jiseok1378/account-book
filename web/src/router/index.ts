@@ -1,8 +1,8 @@
+import HomeView from '@/views/home/HomePage.vue'
 import SignInVue from '@/views/sign/SignIn.vue'
 import SignUpVue from '@/views/sign/SignUp.vue'
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [

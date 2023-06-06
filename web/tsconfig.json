@@ -20,10 +20,11 @@
     ],
     "paths": {
       "@/*": [
-        "src/*",
-        "src"
+        "src/*"
       ],
-      "vue-styled-components" : ["src/@types/vue-styled-components.d.ts"]
+      "vue-styled-components" : [
+        "src/@types/vue-styled-components.d.ts",
+      ]
     },
     "lib": [
       "esnext",

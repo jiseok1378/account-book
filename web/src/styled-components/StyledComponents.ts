@@ -5,7 +5,7 @@ const topTextProps = {
 }
 
 const FlexContainerProps = {
-    virtical : Boolean
+    horizontal : Boolean
 }
 
 export const TopText =  styled('span', topTextProps)`
@@ -15,7 +15,7 @@ export const TopText =  styled('span', topTextProps)`
 
 export const FlexContainer = styled('div', FlexContainerProps)`
     display : flex;
-    flex-direction : ${props => props.virtical ? 'row' : 'column'};
+    flex-direction : ${props => props.horizontal ? 'row' : 'column'};
     width: 100%;
 `
 
@@ -59,3 +59,4 @@ export const Logo = styled('div')`
     padding-top: 70px;
     align-items: center;
 `
+
