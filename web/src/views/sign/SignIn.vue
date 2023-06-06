@@ -1,7 +1,9 @@
 <template>
   <flex-container >
     <logo-container title="WooGa에 로그인" />
-    <sign-card />
+    <sign-card submitTitle="로그인" 
+      @submit="submit"
+    />
   </flex-container>
 </template>
 

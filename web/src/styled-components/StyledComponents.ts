@@ -9,6 +9,7 @@ const FlexContainerProps = {
 }
 
 export const TopText =  styled('span', topTextProps)`
+        font-weight: bold;
         font-size : ${props => props.fontSize}px;
     ` 
 
@@ -32,7 +33,6 @@ export const SignContainerInner = styled('div')`
     padding: 10px 20px;
 `
 export const LinkTextContainer = styled('div')`
-    font-size: 12px;
     text-align: center;
     width: 100%;
 `

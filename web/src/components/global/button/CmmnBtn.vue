@@ -42,7 +42,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .cmmn-btn{
     text-transform: none !important;
-    font-size: 12px;
+    font-size: $font-size-root;
     
 }
 </style>

@@ -5,7 +5,7 @@
       dark
     >
       <div class="d-flex align-center">
-        <banner-btn :title="'Woo Ga'" 
+        <banner-btn :title="'WooGa'" 
           @click="(e) => $emit('click-left-btn', e)" 
           icon="mdi-notebook-heart-outline"/>
       </div>
@@ -13,7 +13,7 @@
       <v-spacer></v-spacer>
       
       <banner-btn 
-        :title="'SignIn'" 
+        :title="'로그인'" 
         @click="(e) => $emit('click-right-btn', e)" 
         icon="mdi-open-in-new"
         :iconSize="23"

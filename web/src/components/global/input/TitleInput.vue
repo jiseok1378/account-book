@@ -1,7 +1,7 @@
 <template>
     <div>
-        <label v-if="title" style="font-size: 10px; margin-bottom: 5px;">{{title}}</label>
-        <v-text-field class="title-input-text-field" :hide-details="hideDetails" :placeholder="placeholder" outlined autofocus />
+        <label v-if="title" style="margin-bottom: 5px;">{{title}}</label>
+        <v-text-field class="title-input-text-field" :hide-details="hideDetails" :placeholder="placeholder" outlined autofocus :type="type"/>
     </div>
 </template>
 
@@ -9,6 +9,9 @@
 import Vue from 'vue';
 export default Vue.extend({
     props:{
+        type : {
+            type: String, 
+        },
         title : {
             type: String,
             default: undefined
