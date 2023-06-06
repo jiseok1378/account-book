@@ -1,11 +1,11 @@
 <template>
     <sign-container>
         <sign-container-inner>
-            <title-input class="card-inner-content" hide-details :title="'사용자 아이디'" placeholder="사용자 아이디" />
+            <title-input class="card-inner-content" hide-details autofocus :title="'사용자 아이디'" placeholder="사용자 아이디" />
             <title-input class="card-inner-content" hide-details :title="'사용자 패스워드'" type="password" placeholder="사용자 패스워드" />
             <template v-if="type === 'signup'">
                 <title-input class="card-inner-content" hide-details :title="'이름'" placeholder="이름" />
-                <title-input class="card-inner-content" hide-details :title="'Email'" placeholder="Email" />
+                <title-input class="card-inner-content" hide-details :title="'E-mail'" placeholder="E-mail" />
             </template>
             <cmmn-btn @click="(e)=> $emit('submit', e)" class="card-inner-content" width="100%" color="primary">{{submitTitle}}</cmmn-btn>
             <link-text v-if="type === 'signup'">
