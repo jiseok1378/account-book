@@ -18,13 +18,9 @@ export default defineComponent({
   components: {
     TopBanner
   },
-  created(){
-    this.$cookies.set("1", "2")
+  beforeMount(){
+    this.$EventBus.$on('changeRoute', this.changeRoute);
   },
-  data: () => ({
-    
-    //
-  }),
   methods: {
     changeRoute(path : string){
       if(this.$route.path !== path){

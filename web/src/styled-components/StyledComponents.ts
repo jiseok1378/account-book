@@ -60,3 +60,17 @@ export const Logo = styled('div')`
     align-items: center;
 `
 
+export const ThurmbnailWrapper = styled('div')`
+    display: flex;
+    width: 35px;
+    height: 35px;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 100%;
+    overflow: hidden;
+    margin-right: 5px;
+`
+export const UserThurmbnail = styled('img')`
+    width: 100%;
+`

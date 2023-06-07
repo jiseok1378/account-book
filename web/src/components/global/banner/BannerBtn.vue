@@ -1,21 +1,27 @@
 <template>
     <cmmn-btn text @click="click">
         <v-icon 
-            v-if="icon" 
+            v-if="icon && !userThurmbnail" 
             :style="`font-size: ${iconSize}px; margin-right: 5px`">
             {{icon}}
         </v-icon>
+        <thurmbnail-wrapper v-else-if="!icon && userThurmbnail">
+            <user-thurmbnail :src="userThurmbnail"></user-thurmbnail>
+        </thurmbnail-wrapper>
         <top-text :font-size="15">{{ title }}</top-text>
     </cmmn-btn>
 </template>
 
 <script lang="ts">
 import CmmnBtn from '@/components/global/button/CmmnBtn.vue';
-import { TopText } from '@/styled-components/StyledComponents';
+import { ThurmbnailWrapper, TopText, UserThurmbnail } from '@/styled-components/StyledComponents';
 import Vue from 'vue';
 export default Vue.extend({
-  components: { CmmnBtn, TopText },
+  components: { CmmnBtn, TopText, UserThurmbnail, ThurmbnailWrapper },
     props:{
+        userThurmbnail: {
+            default: undefined
+        },
         textSize: {
             type: Number,
             default: 18

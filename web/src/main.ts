@@ -1,18 +1,20 @@
+import api from '@/util/axios'
 import Vue from 'vue'
+import VueCookies from "vue-cookies"
 import App from './App.vue'
+import vuetify from './plugins/vuetify'
 import router from './router'
 import store from './store'
-import api from '@/util/axios'
-import vuetify from './plugins/vuetify'
-import VueCookies from "vue-cookies";
 
 Vue.config.productionTip = false
 Vue.prototype.$http = api;
 Vue.use(VueCookies);
-
+const EventBus = new Vue(); 
+Vue.prototype.$EventBus = EventBus;
 declare module 'vue/types/vue' {
   interface Vue {
-    $http: typeof api 
+    $http: typeof api,
+    $EventBus: Vue
   }
 }
 new Vue({

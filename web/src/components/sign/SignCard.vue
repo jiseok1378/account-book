@@ -15,7 +15,6 @@
                 <router-link to="/signup">아이디가 없으신가요?</router-link>
                 <router-link to="/" class="card-link-text-right">ID/PW를 잊어버리셨나요?</router-link>
             </link-text>
-            
         </sign-container-inner>
     </sign-container>
 </template>
@@ -27,6 +26,11 @@ import LinkText from '@/components/global/link/LinkText.vue';
 import { SignContainer, SignContainerInner } from '@/styled-components/StyledComponents';
 import Vue from 'vue';
 export default Vue.extend({
+    data(){
+        return {
+
+        };
+    },
     components: {
         SignContainer,
         SignContainerInner,
