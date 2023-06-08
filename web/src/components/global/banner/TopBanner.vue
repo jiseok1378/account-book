@@ -40,6 +40,11 @@ export default defineComponent({
   mounted() {
     this.$EventBus.$on('chageUserNm', (userNm) => this.userNm = userNm);
     this.$EventBus.$on('chageUserThurmbnail', (userThurmbnail) => this.userThurmbnail = userThurmbnail);
+    this.$EventBus.$on('clearUserInfo', () => {
+      this.userNm = undefined;
+      this.userThurmbnail= undefined;
+    });
+    
   },
   methods: {
     clickRightBtn(e){

@@ -3,16 +3,12 @@
     <div class="d-flex">
         <v-row class="pair-item d-flex justify-center">
             <v-col class="d-flex justify-start align-center" :cols="cols" sm="2" >
-                <thurmbnail-wrapper>
-                    <user-thurmbnail :src="item.thurmbnailUrl"/>
-                </thurmbnail-wrapper>
+                <thumbnail-container :url="item.thurmbnailUrl"/>
                 <label class="user-name"><b>{{item.userNm}}</b></label>
             </v-col>
-            <v-col class="d-flex justify-start align-center" :cols="cols" sm="7">{{ item.pairMsg }}</v-col>
-            <v-col class="d-flex justify-end align-center " :cols="cols" sm="3">
-                <v-btn class="btn" color="primary" :disabled="item.pairStatus != 1">
-                   {{ statusCode[item.pairStatus] }}
-                </v-btn>
+            <v-col class="d-flex justify-start align-center" :cols="cols" sm="9">{{ item.pairMsg }}</v-col>
+            <v-col :class="`d-flex justify-center align-center detail-link ${item.pairStatus != 1 ? 'disabled': ''}`" @click="goPairDetail" :cols="cols" sm="1">
+                 <label class="txt" v-html="statusCode[item.pairStatus]"></label>{{  }}
             </v-col>
         </v-row>
     </div>
@@ -20,21 +16,22 @@
 
 <script lang="ts">
 import { PairItemType } from '@/@types/global-types';
-import { ThurmbnailWrapper, UserThurmbnail } from '@/styled-components/StyledComponents';
 import Vue from 'vue';
+import ThumbnailContainer from '../global/img/ThumbnailContainer.vue';
 export default Vue.extend({
-    components : {UserThurmbnail, ThurmbnailWrapper},
+  components: { ThumbnailContainer },
     data(){
         return {
             cols: 12,
             statusCode:{
-                0: '수락 대기중',
+                0: '수락<br />대기중',
                 1: '수락',
                 2: '거절',
                 3: '페어 끊김'
             }
         }
     },
+    
     props:{
         item:{
             default: Object as () => PairItemType
@@ -44,7 +41,9 @@ export default Vue.extend({
         console.log(this.item)
     },
     methods:{
-
+        goPairDetail(){
+            this.$router.push("/")
+        }
     }
 })
 </script>
@@ -53,20 +52,29 @@ export default Vue.extend({
 .pair-item{
     margin: 10px 0px;
     border: solid 1px;
-    border-color: var(--v-primary-base);
+    border-color: var(--v-primary-darken2);
     border-radius: 10px;
+    min-height: 30px;
+    overflow: hidden;
     .user-name{
         margin-left: 5px;
     }
     &:hover{
         background: var(--v-primary-lighten3);
     }
-    .btn{
-        width: 80px;
-    }
-    @media (max-width: 780px) {
-        .btn{
-            width: 100%;
+    .detail-link{
+        cursor: pointer;
+        color: white;
+        font-weight: bold;
+        background: var(--v-primary-base);
+        text-align: center;
+        .txt{
+            cursor: inherit;
+        }
+        &.disabled{
+        pointer-events: none;
+        cursor: not-allowed;
+        background: var(--v-secondary-lighten4) !important;
         }
     }
 }

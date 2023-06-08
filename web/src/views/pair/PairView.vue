@@ -1,25 +1,27 @@
 <template>
-  <div style="padding: 50px 100px">
-    <div class="d-flex align-center pair-title">
-      <v-icon class="icon" color="primary"> mdi-format-list-checks</v-icon>페어 목록
-    </div>
+  <div class="main-viewer">
+    <main-title :title="`${$cookies.get('userNm')}님의 페어 목록`" subTitle="여기에서는 내가 보낸 페어 요청, 받은 페어 요청, 상태를 확인할 수 있어요."></main-title>
+    <tab-container :items="['내가 요청한 목록', '요청 받은 목록']"/>
     <pair-item v-for="(item, index) in pairItems" :key="index" :item="item" />
   </div>
 </template>
 
 <script lang="ts">
 import { PairItemType } from '@/@types/global-types';
+import TabContainer from '@/components/global/tab/TabContainer.vue';
+import MainTitle from '@/components/global/title/MainTitle.vue';
 import PairItem from '@/components/pair/PairItem.vue';
 import Vue from 'vue';
 interface PairViewType{
   pairItems : PairItemType[]
 }
 export default Vue.extend({
-  components: { PairItem },
+  components: { PairItem, MainTitle, TabContainer },
   beforeCreate(){
     if(!this.$cookies.get('accessToken')){
       alert('로그인 후 이용해주세요')
-      this.$router.push('/')
+      this.$EventBus.$emit('clearUserInfo')
+      this.$router.push('/signin')
     }
   },
   data() : PairViewType {
@@ -58,13 +60,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.pair-title{
-  margin-bottom: 30px;
-  font-size: 23px;
-  font-weight: bold;
-  .icon {
-    margin-right: 10px;
-    font-size: 40px;
-  }
-}
+
+
+
 </style>
