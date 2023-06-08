@@ -16,7 +16,7 @@
         :key="index" 
         :item="item" 
       />
-      <infinite-loading @infinite="handleNotificationListScroll"></infinite-loading>
+      <infinite-loading @infinite="loadMore"></infinite-loading>
     </div>
 
   </div>
@@ -39,6 +39,7 @@ interface PairViewType{
   tabs: PairTabsType[] 
   sendCnt : number
   postCnt : number
+  isLoad : boolean 
   sendList: PairType[]
   postList: PairType[]
 
@@ -60,6 +61,7 @@ export default Vue.extend({
   },
   data() : PairViewType {
     return {
+      isLoad : false,
       tab: 1,
       pageIndex: 1,
       sendCnt: 0,
@@ -97,7 +99,7 @@ export default Vue.extend({
         this.$router.push('/signin')
       }
     },
-    handleNotificationListScroll(e) {
+    loadMore(e) {
       const isMore = (type) : boolean => {
         switch(type){
           case 'send' : return this.sendCnt <= this.sendList.length
@@ -106,11 +108,16 @@ export default Vue.extend({
         }
       }
       const type = this.tabs[this.tab-1].value;
+      this.isLoad = true;
       setTimeout(() =>{
-        e.loaded();
-        this.getPairList(this.pageIndex++, type);
-        if(isMore(type))
+        if(isMore(type)){
           e.complete();
+        }
+        else{
+          this.getPairList(this.pageIndex++, type);
+          e.loaded();
+        }
+        this.isLoad = false;
       },
       1000)
     },
