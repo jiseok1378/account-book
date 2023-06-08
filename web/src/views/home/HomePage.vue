@@ -1,5 +1,5 @@
 <template>
-  <div class="main-viewer">
+  <div class="main-viewer home-main" >
     <template>
       <main-title> WooGa(우리 가계부 써요)에 오신것을 환영해요 :) </main-title>
       <sub-title v-for="( value, index ) in subTitle" :key="index">{{ value }}</sub-title>
@@ -30,6 +30,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.home-main{
+  padding-top: 60px !important;
+}
 .home-main-icon{
   position: absolute;
   right: 100px;

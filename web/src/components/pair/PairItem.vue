@@ -3,19 +3,23 @@
     <div class="d-flex">
         <v-row class="pair-item d-flex justify-center">
             <v-col class="d-flex justify-start align-center" :cols="cols" sm="2" >
-                <thumbnail-container :url="item.thurmbnailUrl"/>
-                <label class="user-name"><b>{{item.userNm}}</b></label>
+                <thumbnail-container :url="item.user.thurmbnailUrl"/>
+                <label class="user-name"><b>{{item.user.userNm}}</b></label>
             </v-col>
-            <v-col class="d-flex justify-start align-center" :cols="cols" sm="9">{{ item.pairMsg }}</v-col>
+            <v-col class="d-flex justify-start align-center" :cols="cols" sm="7">{{ item.pairMsg }}</v-col>
+            <v-col class="d-flex justify-start align-center" :cols="cols" sm="2">
+                 <router-link to="/" v-if="Object.keys(item).includes('memberList')">
+                    멤버 수: {{ item.memberList.length }}
+                </router-link>
+            </v-col> 
             <v-col :class="`d-flex justify-center align-center detail-link ${item.pairStatus != 1 ? 'disabled': ''}`" @click="goPairDetail" :cols="cols" sm="1">
-                 <label class="txt" v-html="statusCode[item.pairStatus]"></label>{{  }}
+                 <label class="txt" v-html="statusCode[item.pairStatus]"></label>
             </v-col>
         </v-row>
     </div>
 </template>
 
 <script lang="ts">
-import { PairItemType } from '@/@types/global-types';
 import Vue from 'vue';
 import ThumbnailContainer from '../global/img/ThumbnailContainer.vue';
 export default Vue.extend({
@@ -34,7 +38,7 @@ export default Vue.extend({
     
     props:{
         item:{
-            default: Object as () => PairItemType
+            default: Object
         },
     },
     mounted(){

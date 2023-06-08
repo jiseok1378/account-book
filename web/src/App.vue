@@ -18,6 +18,7 @@ export default defineComponent({
   components: {
     TopBanner
   },
+
   beforeMount(){
     this.$EventBus.$on('changeRoute', this.changeRoute);
   },
