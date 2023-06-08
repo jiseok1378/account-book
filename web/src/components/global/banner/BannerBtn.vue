@@ -5,19 +5,18 @@
             :style="`font-size: ${iconSize}px; margin-right: 5px`">
             {{icon}}
         </v-icon>
-        <thurmbnail-wrapper v-else-if="!icon && userThurmbnail">
-            <user-thurmbnail :src="userThurmbnail"></user-thurmbnail>
-        </thurmbnail-wrapper>
+        <thumbnail-container :size="30" class="banner-thurmbnail" :src="userThurmbnail" v-else-if="!icon && userThurmbnail" />
         <top-text :font-size="15">{{ title }}</top-text>
     </cmmn-btn>
 </template>
 
 <script lang="ts">
 import CmmnBtn from '@/components/global/button/CmmnBtn.vue';
-import { ThurmbnailWrapper, TopText, UserThurmbnail } from '@/styled-components/StyledComponents';
+import { TopText } from '@/styled-components/StyledComponents';
 import Vue from 'vue';
+import ThumbnailContainer from '../img/ThumbnailContainer.vue';
 export default Vue.extend({
-  components: { CmmnBtn, TopText, UserThurmbnail, ThurmbnailWrapper },
+  components: { CmmnBtn, TopText,  ThumbnailContainer },
     props:{
         userThurmbnail: {
             default: undefined
@@ -48,6 +47,8 @@ export default Vue.extend({
 })
 </script>
 
-<style>
-
+<style lang="scss">
+.banner-thurmbnail{
+    margin-right: 5px;
+}
 </style>

@@ -3,7 +3,7 @@
     <div class="d-flex">
         <v-row class="pair-item d-flex justify-center">
             <v-col class="d-flex justify-start align-center" :cols="cols" sm="2" >
-                <thumbnail-container :url="item.user.thurmbnailUrl"/>
+                <thumbnail-container :src="item.user.thurmbnailUrl"/>
                 <label class="user-name"><b>{{item.user.userNm}}</b></label>
             </v-col>
             <v-col class="d-flex justify-start align-center" :cols="cols" sm="7">{{ item.pairMsg }}</v-col>

@@ -1,16 +1,18 @@
 <template>
-    <thurmbnail-wrapper>
-        <user-thurmbnail :src="url"/>
-    </thurmbnail-wrapper>
+    <v-avatar :size="size">
+        <img :src="src" />
+    </v-avatar>
 </template>
 
 <script lang="ts">
-import { ThurmbnailWrapper, UserThurmbnail } from '@/styled-components/StyledComponents';
 import Vue from 'vue';
 export default Vue.extend({
-    components: {ThurmbnailWrapper, UserThurmbnail},
     props: {
-        url: String as () => string
+        src: String as () => string,
+        size: {
+            type: Number as () => number,
+            default: 30
+        }
     }
 })
 </script>

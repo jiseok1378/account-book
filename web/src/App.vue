@@ -6,9 +6,9 @@
     <v-main>
       <router-view/>
     </v-main>
-    <v-list-item-avatar class="floating-btn" @click="goTop">
+    <v-avatar class="floating-btn" @click="goTop">
       <v-icon>mdi-transfer-up</v-icon>
-    </v-list-item-avatar>
+    </v-avatar>
   </v-app>
 </template>
 
