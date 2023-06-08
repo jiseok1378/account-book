@@ -1,11 +1,14 @@
 <template>
   <v-app>
-    <top-banner 
+    <top-banner id="top-banner-id"
       @click-left-btn="changeRoute('/')"
       @click-right-btn="changeRoute('/signin')"/>
     <v-main>
       <router-view/>
     </v-main>
+    <v-list-item-avatar class="floating-btn" @click="goTop">
+      <v-icon>mdi-transfer-up</v-icon>
+    </v-list-item-avatar>
   </v-app>
 </template>
 
@@ -28,7 +31,23 @@ export default defineComponent({
         this.$router.push(path)
       }
     },
-    
+    goTop(){
+      this.$vuetify.goTo('#top-banner-id')
+    }
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.floating-btn{
+  position: fixed;
+  bottom: 20px;
+  right: 10px;
+  cursor: pointer;
+  box-shadow : 4px 5px 8px -5px;
+  background: var(--v-primary-base);
+  &:hover{
+    background: var(--v-primary-lighten1);
+  }
+}
+</style>
