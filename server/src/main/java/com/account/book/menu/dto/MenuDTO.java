@@ -9,5 +9,5 @@ public class MenuDTO {
     private Integer menuSn;
     private String menuNm;
     private Integer upperMenuSn;
-    private Integer pairSn;
+    private Integer groupSn;
 }

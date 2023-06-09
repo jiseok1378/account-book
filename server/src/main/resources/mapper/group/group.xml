@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+    [템플릿 설명]
+    - 해당 파일은 SQL 문을 작성하는 곳입니다.
+-->
+<mapper namespace="com.account.book.group.dao.GroupDAO">
+
+    <insert id="addGroup" parameterType="com.account.book.group.dto.GroupDTO">
+        INSERT INTO TB_GROUP(GROUP_NM, OWNER_USER_SN)
+        VALUES (#{groupNm}, #{ownerUserSn})
+        <selectKey resultType="java.lang.Integer" keyProperty="groupSn" order="AFTER">
+            SELECT currval(pg_get_serial_sequence('TB_GROUP', 'group_sn'))
+        </selectKey>
+    </insert>
+
+    <insert id="addGroupMessage" parameterType="com.account.book.group.message.dto.GroupMessageDTO">
+        INSERT INTO TB_GROUP_MESSAGE(MESSAGE_CN, GROUP_SN, FROM_USER_SN, TO_USER_SN)
+        VALUES (#{messageCn}, #{groupSn}, #{fromUserSn}, #{toUserSn})
+        <selectKey resultType="java.lang.Integer" keyProperty="messageSn" order="AFTER">
+            SELECT currval(pg_get_serial_sequence('TB_GROUP_MESSAGE', 'message_sn'))
+        </selectKey>
+    </insert>
+
+    <update id="updateGroupMessageStatus" parameterType="com.account.book.group.message.dto.GroupMessageDTO">
+        UPDATE TB_GROUP_MESSAGE
+        SET MESSAGE_STATUS = #{messageStatus}
+        WHERE MESSAGE_SN = #{messageSn}
+    </update>
+
+    <insert id="addGroupMember" parameterType="com.account.book.group.member.dto.GroupMemberDTO">
+        INSERT INTO TB_GROUP_MEMBER(GROUP_SN, USER_SN, GROUP_ROLE)
+        VALUES (#{groupSn}, #{userSn}, #{groupRole})
+        <selectKey resultType="java.lang.Integer" keyProperty="memberSn" order="AFTER">
+            SELECT currval(pg_get_serial_sequence('TB_GROUP_MEMBER', 'member_sn'))
+        </selectKey>
+    </insert>
+
+    <select id="selectGroupMessageByToUserSn" parameterType="com.account.book.group.message.dto.GroupMessageDTO" resultType="com.account.book.group.message.dto.GroupMessageDTO">
+        /* 내가 보낸 메세지 */
+        SELECT
+               A.*
+        FROM TB_GROUP_MESSAGE A
+        WHERE
+            1=1
+            AND A.TO_USER_SN = ${toUserSn}
+            <if test="searchGroupNm != null">
+                AND A.GROUP_SN IN (
+                    SELECT B.GROUP_SN
+                    FROM TB_GROUP B
+                    WHERE B.GROUP_NM
+                    LIKE CONCAT('%',${searchGroupNm},'%')
+                )
+            </if>
+    </select>
+
+    <select id="selectGroupMessageByFromUserSn" parameterType="com.account.book.group.message.dto.GroupMessageDTO" resultType="com.account.book.group.message.dto.GroupMessageDTO">
+        /* 내가 받은 메세지 */
+        SELECT
+            A.*,
+            (
+                SELECT
+                    COUNT(*)
+                FROM TB_GROUP_MEMBER C
+                WHERE
+                    C.GROUP_SN = A.GROUP_SN
+            ) AS memberCnt
+        FROM TB_GROUP_MESSAGE A
+        WHERE
+        1=1
+        AND A.FROM_USER_SN = ${fromUserSn}
+        <if test="searchGroupNm != null ">
+            AND A.GROUP_SN IN (
+            SELECT B.GROUP_SN
+            FROM TB_GROUP B
+            WHERE B.GROUP_NM LIKE CONCAT('%',${searchGroupNm},'%')
+            )
+        </if>
+    </select>
+
+</mapper>

@@ -8,17 +8,17 @@
 <mapper namespace="com.account.book.menu.dao.MenuDAO">
 
     <insert id="addMenu" parameterType="com.account.book.menu.dto.MenuDTO">
-        INSERT INTO TB_MENU(MENU_NM, UPPER_MENU_SN, PAIR_SN) VALUES (
+        INSERT INTO TB_MENU(MENU_NM, UPPER_MENU_SN, GROUP_SN) VALUES (
                                                             #{menuNm}
                                                           , #{upperMenuSn}
-                                                          , #{pairSn}
+                                                          , #{groupSn}
                                                         )
         <selectKey resultType="java.lang.Integer" keyProperty="menuSn" order="AFTER">
             SELECT currval(pg_get_serial_sequence('TB_MENU', 'menu_sn'))
         </selectKey>
     </insert>
-    <select id="selectByPairSn" parameterType="java.lang.Integer" resultType="com.account.book.menu.dto.MenuDTO">
-        SELECT * FROM TB_MENU WHERE pairSn = #{0}
+    <select id="selectByGroupSn" parameterType="java.lang.Integer" resultType="com.account.book.menu.dto.MenuDTO">
+        SELECT * FROM TB_MENU WHERE GROUP_SN = #{0}
     </select>
 
     <select id="selectByMenuSn" parameterType="java.lang.Integer" resultType="com.account.book.menu.dto.MenuDTO">

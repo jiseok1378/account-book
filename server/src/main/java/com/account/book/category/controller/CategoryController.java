@@ -27,7 +27,7 @@ public class CategoryController {
 
     @GetMapping
     public ListResult<CategoryDTO> selectCategory(MenuCategoryDTO dto ){
-        return responseService.getListResult(categoryService.selectByPairSn( dto ));
+        return responseService.getListResult(categoryService.selectByGroupSn( dto ));
     }
 
     @PutMapping

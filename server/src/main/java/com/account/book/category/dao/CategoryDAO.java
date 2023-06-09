@@ -8,7 +8,7 @@ import java.util.List;
 
 @Mapper
 public interface CategoryDAO {
-    List<CategoryDTO> selectByPairSn( Integer pairSn );
+    List<CategoryDTO> selectByGroupSn( Integer groupSn );
 //    List<CategoryDTO> selectByPairSnAndMenuSn( Integer pairSn, Integer menuSn );
     int addCategory( CategoryDTO categoryDTO );
     void deleteCategory( Integer categorySn );

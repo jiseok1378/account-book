@@ -6,9 +6,12 @@ import com.account.book.category.dto.CategoryDTO;
 import com.account.book.category.dto.MenuCategoryDTO;
 import com.account.book.cmmn.util.response.ListResult;
 import com.account.book.cmmn.util.response.SingleResult;
+import com.account.book.group.dto.GroupDTO;
+import com.account.book.group.message.dto.GroupMessageDTO;
+import com.account.book.group.message.dto.GroupMessageStatus;
 import com.account.book.menu.dto.MenuDTO;
-import com.account.book.pair.dto.AcceptStatus;
-import com.account.book.pair.dto.PairDTO;
+//import com.account.book.pair.dto.AcceptStatus;
+//import com.account.book.pair.dto.PairDTO;
 import com.account.book.user.dto.UserDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -60,7 +63,7 @@ public class SystemSimulation {
 
     private static Integer user1Sn;
     private static Integer user2Sn;
-    private static Integer pairSn;
+    private static Integer groupSn;
     private static Integer categorySn;
     private static Integer lowerMenuSn;
     private static Integer upperMenuSn;
@@ -120,40 +123,52 @@ public class SystemSimulation {
 
     }
 
-    @DisplayName("페어 생성, 수락, 조회")
+    @DisplayName("그룹 생성, 수락, 조회")
     @Test
     void b() throws Exception {
-        PairDTO pairDTO = new PairDTO();
-        pairDTO.setUserSnTo(user1Sn);
-        pairDTO.setUserSnFrom(user2Sn);
-        pairDTO.setPairMsg("나의 페어가 되어주세요!");
-
-        SingleResult<Integer> insertedRes = mapper.readValue(mvc.perform(post("/api/pair")
-                .content(mapper.writeValueAsString(pairDTO))
+        GroupDTO group = new GroupDTO();
+        group.setOwnerUserSn(user1Sn);
+        group.setGroupNm("그룹");
+        String createRes = mvc.perform(post("/api/group")
                 .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), new TypeReference<SingleResult<Integer>>() {});
+                .content(mapper.writeValueAsString(group))
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
-        pairSn = insertedRes.getData();
+        groupSn = Integer.parseInt(createRes);
 
-        SingleResult<PairDTO> selectedPair = mapper.readValue(mvc.perform(get("/api/pair")
-                .param("pairSn", Integer.toString(pairSn))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), new TypeReference<SingleResult<PairDTO>>() {});
+        GroupMessageDTO messageDTO = new GroupMessageDTO();
 
-        System.out.println(selectedPair.getData().getPairMsg() + ":" + selectedPair.getData().getAccept());
+        messageDTO.setFromUserSn(user1Sn);
+        messageDTO.setMessageCn("나의 멤버가 될래요?");
+        messageDTO.setToUserSn(user2Sn);
+        messageDTO.setGroupSn(groupSn);
 
-        mvc.perform( put("/api/pair/accept")
-                .param("pairSn", Integer.toString(selectedPair.getData().getPairSn()) )
-                .param("accept", Integer.toString(AcceptStatus.ALLOWED.getCode()))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isOk());
+        String sendRes = mvc.perform(post("/api/group/message").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(messageDTO))).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
-        SingleResult<PairDTO> selectedPairAfterAccept = mapper.readValue(mvc.perform(get("/api/pair")
-                .param("pairSn", Integer.toString(pairSn))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), new TypeReference<SingleResult<PairDTO>>() {});
+        Integer messageSn = Integer.parseInt(sendRes);
 
-        System.out.println(selectedPair.getData().getPairMsg() + ":" + selectedPairAfterAccept.getData().getAccept());
+        messageDTO.setMessageSn(messageSn);
+        messageDTO.setMessageStatus(GroupMessageStatus.ACCEPT.getCode());
+
+        mvc.perform(put("/api/group/message/status").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(messageDTO))).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        System.out.println(createRes);
+
+        String fromRes = mvc.perform(get("/api/group/message")
+                .param("fromUserSn", Integer.toString(user1Sn))
+                .param("type", "FROM")
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        System.out.println(fromRes);
+
+        String toRes = mvc.perform(get("/api/group/message")
+                .param("toUserSn", Integer.toString(user2Sn))
+                .param("type", "TO")
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        System.out.println(toRes);
+
+
     }
 
     @DisplayName("카테고리 생성, 업데이트, 조회")
@@ -161,7 +176,7 @@ public class SystemSimulation {
     void c() throws Exception {
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.setCategoryNm("내 이름은 카테고리. 탐정이죠.");
-        categoryDTO.setPairSn( pairSn );
+        categoryDTO.setGroupSn( groupSn );
 
         SingleResult<Integer> insertResult = mapper.readValue(mvc.perform(
                 post("/api/category")
@@ -190,7 +205,7 @@ public class SystemSimulation {
         ListResult<CategoryDTO> updated = mapper.readValue(mvc.perform(
                 get("/api/category")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("pairSn", Integer.toString(pairSn))
+                        .param("groupSn", Integer.toString(groupSn))
         ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), new TypeReference<>(){});
 
         assertEquals(updatedCategoryNm, updated.getData().get(0).getCategoryNm());
@@ -201,7 +216,7 @@ public class SystemSimulation {
     void d() throws Exception {
         MenuDTO upperMenu = new MenuDTO();
         upperMenu.setMenuNm("상위 메뉴");
-        upperMenu.setPairSn( pairSn );
+        upperMenu.setGroupSn( groupSn );
 
          SingleResult<Integer> upperinsertedRes = mapper.readValue(
                  mvc.perform(post("/api/menu")
@@ -214,7 +229,7 @@ public class SystemSimulation {
         MenuDTO lowerMenu = new MenuDTO();
         lowerMenu.setMenuNm("하위 메뉴");
         lowerMenu.setUpperMenuSn(upperMenuSn);
-        lowerMenu.setPairSn(pairSn);
+        lowerMenu.setGroupSn(groupSn);
 
          SingleResult<Integer> lowerInsertedRes = mapper.readValue(
                 mvc.perform(post("/api/menu")
@@ -250,7 +265,7 @@ public class SystemSimulation {
         MenuCategoryDTO menuCategoryDTO = new MenuCategoryDTO();
         menuCategoryDTO.setCategorySn( categorySn );
         menuCategoryDTO.setMenuSn( upperMenuSn );
-        menuCategoryDTO.setPairSn( pairSn );
+        menuCategoryDTO.setGroupSn( groupSn );
         mvc.perform(
                 post("/api/category/menu")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -260,7 +275,7 @@ public class SystemSimulation {
         ListResult<CategoryDTO> categoryDTOS = mapper.readValue(mvc.perform(
                 get("/api/category")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("pairSn", Integer.toString(pairSn))
+                        .param("groupSn", Integer.toString(groupSn))
                         .param("menuSn", Integer.toString(upperMenuSn))
         ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), new TypeReference<>(){});
 
@@ -294,7 +309,7 @@ public class SystemSimulation {
         MenuCategoryDTO menuCategoryDTO = new MenuCategoryDTO();
         menuCategoryDTO.setCategorySn( categorySn );
         menuCategoryDTO.setMenuSn( upperMenuSn );
-        menuCategoryDTO.setPairSn( pairSn );
+        menuCategoryDTO.setGroupSn( groupSn );
         mvc.perform(
                 post("/api/category/menu")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -304,11 +319,12 @@ public class SystemSimulation {
         ListResult<CategoryDTO> categoryDTOS = mapper.readValue(mvc.perform(
                 get("/api/category")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("pairSn", Integer.toString(pairSn))
+                        .param("groupSn", Integer.toString(groupSn))
                         .param("menuSn", Integer.toString(upperMenuSn))
         ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), new TypeReference<>(){});
 
         assertEquals(1, categoryDTOS.getData().get(0).getAccountBooks().size());
+
     }
 
     @DisplayName("메뉴 삭제")

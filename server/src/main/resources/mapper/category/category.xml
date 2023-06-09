@@ -10,7 +10,7 @@
     <insert id="addCategory" parameterType="com.account.book.category.dto.CategoryDTO">
         INSERT INTO TB_CATEGORY
             (
-                PAIR_SN
+                GROUP_SN
                 , CATEGORY_NM
                 <if test="otherColumn != null">
                     , OTHTER_COLUMN
@@ -18,7 +18,7 @@
             )
             VALUES
             (
-                #{pairSn}
+                #{groupSn}
                 , #{categoryNm}
                 <if test="otherColumn != null">
                     , #{otherColumn}
@@ -53,8 +53,8 @@
         </if>
     </update>
 
-    <select id="selectByPairSn" parameterType="java.lang.Integer" resultMap="categoryMap">
-        SELECT * FROM TB_CATEGORY WHERE PAIR_SN = #{0}
+    <select id="selectByGroupSn" parameterType="java.lang.Integer" resultMap="categoryMap">
+        SELECT * FROM TB_CATEGORY WHERE GROUP_SN = #{0}
     </select>
 
     <insert id="registeredMenu" parameterType="com.account.book.category.dto.MenuCategoryDTO">
@@ -66,7 +66,7 @@
 
     <resultMap id="categoryMap" type="com.account.book.category.dto.CategoryDTO">
         <result property="categorySn" column="CATEGORY_SN" />
-        <result property="pairSn" column="PAIR_SN" />
+        <result property="groupSn" column="GROUP_SN" />
         <result property="categoryNm" column="CATEGORY_NM" />
         <result property="otherColumn" column="OTHER_COLUMN" />
         <collection property="accountBooks" column="CATEGORY_SN" javaType="java.util.List" ofType="com.account.book.acbook.dto.AccountBookDTO" select="selectAccountBookByCategorySn"/>
@@ -80,7 +80,7 @@
         SELECT c.*
         FROM TB_CATEGORY c
         INNER JOIN TB_MENU_CATEGORY_RELATION m ON m.CATEGORY_SN = c.CATEGORY_SN AND MENU_SN = #{menuSn}
-        WHERE m.MENU_SN = #{menuSn} AND c.PAIR_SN = #{pairSn}
+        WHERE m.MENU_SN = #{menuSn} AND c.GROUP_SN = #{groupSn}
         GROUP BY c.CATEGORY_SN
     </select>
 </mapper>

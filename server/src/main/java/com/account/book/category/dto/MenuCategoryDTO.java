@@ -9,5 +9,5 @@ public class MenuCategoryDTO {
     private Integer mcrSn;
     private Integer menuSn;
     private Integer categorySn;
-    private Integer pairSn;
+    private Integer groupSn;
 }

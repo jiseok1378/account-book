@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CategoryDTO implements Serializable {
     private Integer categorySn;
-    private Integer pairSn;
+    private Integer groupSn;
     private String categoryNm;
     private String otherColumn;
     private List<AccountBookDTO> accountBooks;

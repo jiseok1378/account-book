@@ -15,11 +15,11 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryDAO categoryDAO;
 
     @Override
-    public List<CategoryDTO> selectByPairSn( MenuCategoryDTO dto ) {
+    public List<CategoryDTO> selectByGroupSn( MenuCategoryDTO dto ) {
         if( dto.getMenuSn() != null ){
             return categoryDAO.selectByMenuSnAndCategorySn( dto );
         }
-        return categoryDAO.selectByPairSn( dto.getPairSn() );
+        return categoryDAO.selectByGroupSn( dto.getGroupSn() );
     }
 
     @Override

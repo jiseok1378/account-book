@@ -6,8 +6,7 @@ import com.account.book.category.dto.MenuCategoryDTO;
 import java.util.List;
 
 public interface CategoryService {
-    List<CategoryDTO> selectByPairSn( MenuCategoryDTO dto );
-    //    List<CategoryDTO> selectByPairSnAndMenuSn( Integer pairSn, Integer menuSn );
+    List<CategoryDTO> selectByGroupSn( MenuCategoryDTO dto );
     int addCategory( CategoryDTO categoryDTO );
     void deleteCategory( Integer categorySn );
     int updateCategory( CategoryDTO categoryDTO );
