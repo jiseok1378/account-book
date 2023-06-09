@@ -1,7 +1,10 @@
 <template>
    <v-tabs @change="(value) => $emit('change', items[value])" :value="val" class="tab-container">
     <v-tabs-slider color="primary"></v-tabs-slider>
-    <v-tab class="tab-item" v-for="(item, index) in items" :key="index">{{ labelKey ? item[labelKey] : item }}</v-tab>
+    <v-tab class="tab-item" v-for="(item, index) in items" :key="index">
+        {{ labelKey ? item[labelKey] : item }} 
+        <template v-if="!hideTotal">{{ item.total ? `(${item.total})` : ''}}</template>
+    </v-tab>
   </v-tabs>
 </template>
 
@@ -9,6 +12,10 @@
 import Vue from 'vue';
 export default Vue.extend({
     props: {
+        hideTotal:{
+            type: Boolean as () => boolean,
+            default: false,
+        },  
         value: {
             type: Number as () => number
         },
@@ -17,7 +24,7 @@ export default Vue.extend({
             default: undefined
         },  
         items: {
-            type: Array as () => string[],
+            type: Array as () => any[],
             default: () => ([])
         },
     },
@@ -29,7 +36,6 @@ export default Vue.extend({
     watch:{
         value(o, n){
             this.val = n;
-            console.log(n)
         }
     }
 })

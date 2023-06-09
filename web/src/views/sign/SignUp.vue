@@ -38,7 +38,6 @@ export default Vue.extend({
     async submit(){
       this.setCookie("abc", "abc", 3);
       const response = await this.$http.post("/api/user", this.user)
-      console.log(response);
       const allRes = await this.$http.get("/api/user/all")
       this.allUsers = JSON.stringify(allRes.data, null, 2)
     }

@@ -9,3 +9,8 @@ export interface PairMemberType{
     userSn: number;
     thurmbnailUrl: string;
 }
+export interface PagenationInfo{
+    page: number,
+    count: number,
+    total: number,
+}

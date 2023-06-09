@@ -7,7 +7,7 @@
       :items="tabs" 
       :value="tab" 
       labelKey="label"
-      @change="(value) => tab = value.id" 
+      @change="changeTab" 
       :selectItems="['a', 'b']"
     /> 
     <div>
@@ -16,14 +16,14 @@
         :key="index" 
         :item="item" 
       />
-      <infinite-loading @infinite="loadMore"></infinite-loading>
+      <infinite-loading :identifier="tab" @infinite="loadMore"></infinite-loading>
     </div>
 
   </div>
 </template>
 
 <script lang="ts">
-import { PairType } from '@/@types/global-types';
+import { PagenationInfo, PairType } from '@/@types/global-types';
 import MainTitle from '@/components/global/title/MainTitle.vue';
 import PairItem from '@/components/pair/PairItem.vue';
 import PairTab from '@/components/pair/PairTab.vue';
@@ -32,21 +32,25 @@ interface PairTabsType{
   id: number;
   label: string
   value: string
+  total: number;
 }
 interface PairViewType{
   tab : number
-  pageIndex: number
+  pagenationInfo: {
+    send: PagenationInfo
+    post: PagenationInfo
+  },
   tabs: PairTabsType[] 
-  sendCnt : number
-  postCnt : number
   isLoad : boolean 
   sendList: PairType[]
   postList: PairType[]
-
 }
 function getRandomInt(min, max) { //min ~ max 사이의 임의의 정수 반환
   return Math.floor(Math.random() * (max - min)) + min;
 }
+const sleep = (time: number) => new Promise<void>((resolve, reject)=>{
+  setTimeout(()=>{resolve()}, time)
+})
     
 const imgList = [
   'https://image.kmib.co.kr/online_image/2020/0122/202001220402_11170924119205_1.jpg',
@@ -63,101 +67,109 @@ export default Vue.extend({
     return {
       isLoad : false,
       tab: 1,
-      pageIndex: 1,
-      sendCnt: 0,
-      postCnt: 0,
+      pagenationInfo:{
+        send: {
+          count: 10,
+          page: 1,
+          total: 20,
+        },
+        post: {
+          count: 10,
+          page: 1,
+          total: 100,  
+        }
+      },
       tabs:[
         {
           label: '내가 요청한 목록',
           id: 1,
-          value: 'send'
+          value: 'send',
+          total: 0,
         },
         {
           label:  '요청 받은 목록',
           id: 2,
-          value: 'post'
+          value: 'post',
+          total: 0,
         }
       ],
       sendList: [],
-      postList: []
+      postList: [],
     }
   },
   mounted(){
-    this.sendCnt = 200;
-    this.postCnt = 200;
-    this.getPairList(this.pageIndex++, 'send');
-    this.getPairList(this.pageIndex++, 'post');
+    this.tabs[0].total = this.pagenationInfo.send.total
+    this.tabs[1].total = this.pagenationInfo.post.total
+
   },
   updated(){
     this.checkExpired()
   },
   methods:{
-    checkExpired(){
-      if(!this.$cookies.get('accessToken')){
-        alert('로그인 후 이용해주세요')
-        this.$EventBus.$emit('clearUserInfo')
-        this.$router.push('/signin')
-      }
+    changeTab(value : PairTabsType){
+      this.tab = value.id;
     },
-    loadMore(e) {
-      const isMore = (type) : boolean => {
-        switch(type){
-          case 'send' : return this.sendCnt <= this.sendList.length
-          case 'post' : return this.postCnt <= this.postList.length   
-          default: return false;
-        }
-      }
-      const type = this.tabs[this.tab-1].value;
-      this.isLoad = true;
-      setTimeout(() =>{
-        if(isMore(type)){
-          e.complete();
-        }
-        else{
-          this.getPairList(this.pageIndex++, type);
-          e.loaded();
-        }
-        this.isLoad = false;
-      },
-      1000)
-    },
-    /* 요청 받은 리스트  */
-    getPairList(pageIndex : number, type : string){
-      switch(type){
-        case 'send':{
-          for(let i = 0; i < 10; i++){
-            this.sendList.push(
-              {
+    getPagingMethod(self : PairViewType){
+      return {
+        isMore:{
+          send(){ return self.pagenationInfo.send.total > self.sendList.length },
+          post(){ return self.pagenationInfo.post.total > self.postList.length } 
+        },
+        incresePage:{
+          send(){ return self.pagenationInfo.send.page++ },
+          post(){ return self.pagenationInfo.post.page++ }   
+        },
+        /* TODO: 서버와 연결시 리펙토링 */          
+        loadItem:{
+          async send(){
+            for(let i = 0; i < self.pagenationInfo.send.count ; i++){
+              self.sendList.push({
                 user: {
                   thurmbnailUrl : imgList[getRandomInt(0, 3)],
-                  userNm: `요청 보낸 사람 ${pageIndex*10 + i}`,
-                  userSn: pageIndex*10 + i
+                  userNm: `요청 보낸 사람 ${self.sendList.length}`,
+                  userSn: self.sendList.length
                 },
-                memberList: [],
                 pairMsg: '나와 페어가 되어주시겠어요?',
                 pairStatus: getRandomInt(0,3)
-              }
-            )
-          }
-          break;
-        }
-        case 'post': {
-          for(let i = 0; i < 10; i++){
-            this.postList.push(
-              {  
+              });
+            }
+          },
+          async post(){
+            for(let i = 0; i < self.pagenationInfo.post.count; i++){
+              self.postList.push({
                 user: {
                   thurmbnailUrl : imgList[getRandomInt(0, 3)],
-                  userNm: `요청 받은 사람 ${pageIndex*10 + i}`,
-                  userSn: pageIndex*10 + i
+                  userNm: `요청 받은 사람 ${self.postList.length}`,
+                  userSn: self.postList.length
                 },
-                pairMsg: '나와 페어가 되어주세요!',
+                memberList: [],
+                pairMsg: '나의 페어가 되어주시겠어요?',
                 pairStatus: getRandomInt(0,3)
-              }
-            )
+              });
+            }
           }
-          break;
         }
       }
+    },
+    checkExpired(){
+      if(!this.$cookies.get('accessToken')){
+        alert('로그인 후 이용해주세요');
+        this.$EventBus.$emit('clearUserInfo');
+        this.$router.push('/signin');
+      }
+    },
+    async loadMore(e) {
+      console.log('나 로딩중')
+      const type = this.tabs[this.tab-1].value;
+        const pagingMethod = this.getPagingMethod(this);
+        await sleep(1000); /* 서버와 연결시 삭제 */
+        if(await pagingMethod.isMore[type]()){
+          await pagingMethod.loadItem[type]();
+          e.loaded();
+        }
+        else{
+          e.complete();
+        }
     },
   }
 });
