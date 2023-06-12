@@ -1,5 +1,14 @@
-# DB 설정
+
 spring:
+  config:
+    import: classpath:config/file/upload-file-dev.yml
+  servlet:
+    multipart:
+      enabled: true
+      location: ./upload
+      max-request-size: 10MB
+      max-file-size: 10MB
+  # DB 설정
   datasource:
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     url: jdbc:log4jdbc:postgresql://postgres:5432/acbook

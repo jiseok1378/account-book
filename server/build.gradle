@@ -33,6 +33,9 @@ dependencies {
     /* Spring boot 설정: S  */
     // 버전 기입 안해도 플러그인이 알아서 맞춰준다.
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    compile "org.springframework.boot:spring-boot-configuration-processor"
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    implementation 'commons-io:commons-io:2.6'
     /* Spring boot 설정: E  */
 
     /* Mybatis 설정: S */
