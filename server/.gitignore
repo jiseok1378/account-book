@@ -88,3 +88,5 @@ target/
 
 /bin
 /out
+
+upload/thumbnail/TEMP-**

@@ -1,6 +1,10 @@
 <template>
     <flex-container>
-      <logo-container title="WooGa에 회원가입" />
+      <logo-container 
+        @upload-thumbnail="uploadThumbnail" 
+        :thumbnail="thumbnail"
+        :type="'signup'"
+        title="WooGa에 회원가입" />
       <sign-card type="signup" submitTitle="회원가입" @submit="submit"/>
     </flex-container>
 </template>
@@ -24,9 +28,23 @@ export default Vue.extend({
         userNm: ''
       },
       allUsers: "",
+      thumbnail: undefined
     }
   },
   methods:{
+    async uploadThumbnail(e){
+      const form = new FormData();
+      form.append("thumbnail", e.target.files[0])
+      const response = await this.$http.post("/api/upload/thumbnail", form);
+      const uploadPath = response.data.data
+      if( uploadPath.includes("ERROR") ){
+        alert("업로드에 실패하였습니다.");
+        return;
+      }
+      else{
+        this.thumbnail=uploadPath;
+      }
+    },
     setCookie(cookie_name : string , value : any, days : number) {
       var exdate = new Date();
       exdate.setDate(exdate.getDate() + days);

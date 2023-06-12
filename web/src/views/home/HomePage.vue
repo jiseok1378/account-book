@@ -31,12 +31,7 @@ export default defineComponent({
     }
   },
   methods:{
-    async uploadThumbnail(e){
-      const form = new FormData();
-      form.append("thumbnail", e.target.files[0])
-      const response = await this.$http.post("/api/upload/thumbnail", form);
-      this.testSrc = (response.data.data)
-    }
+   
   }
 });
 </script>

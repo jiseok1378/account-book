@@ -17,7 +17,7 @@ import java.net.MalformedURLException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/upload/thumbnail")
-public class ThumbnailController {
+public class ThumbnailSaveController {
 
     public final UploadPathConfig pathConfig;
 
@@ -26,7 +26,7 @@ public class ThumbnailController {
     public final ResponseService responseService;
 
     @PostMapping
-    public SingleResult<String> uploadThumbnailTemp(@RequestParam("thumbnail") MultipartFile file) throws IOException {
+    public SingleResult<String> uploadThumbnailTemp(@RequestParam("thumbnail") MultipartFile file) throws Exception {
         return responseService.getSingleResult( thumbnailService.saveTempFile(file) );
     }
 
