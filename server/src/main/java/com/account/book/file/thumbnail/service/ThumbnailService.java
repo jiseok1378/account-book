@@ -1,6 +1,7 @@
 package com.account.book.file.thumbnail.service;
 
 import com.account.book.cmmn.global.config.UploadPathConfig;
+import com.account.book.cmmn.util.image.ImageUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.UrlResource;
@@ -26,17 +27,7 @@ public class ThumbnailService {
         else return true;
     }
 
-    private BufferedImage simpleResizeImage(InputStream originalImage, int width, int height) throws Exception {
-        BufferedImage inputImg = ImageIO.read(originalImage);
-        BufferedImage outputImage =
-                new BufferedImage(width, height, inputImg.getType());
 
-        Graphics2D graphics2D = outputImage.createGraphics();
-        graphics2D.drawImage(inputImg, 0, 0, width, height, null);
-        graphics2D.dispose();
-
-        return outputImage;
-    }
 
     public String saveTempFile(MultipartFile multipartFile) throws Exception {
 
@@ -45,17 +36,12 @@ public class ThumbnailService {
         if( !checkUploadPath( saveTarget ) ) return "ERROR";
 
         if( !multipartFile.isEmpty() ) {
-            String tmpNm = "TEMP-" + System.currentTimeMillis() + "." +  FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+            String ext =  FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+            String tmpNm = "TEMP-" + System.currentTimeMillis() + "." + ext;
 
             Path savedPath = saveTarget.resolve( tmpNm ).normalize();
-            InputStream imageIs = multipartFile.getInputStream();
 
-            ImageIO.write( simpleResizeImage(imageIs, 120, 120), "png", savedPath.toFile() );
-            multipartFile.transferTo( savedPath );
-
-            imageIs.close();
-
-            return savedPath.toString();
+            return ImageUtil.resizeAndSave(multipartFile, 120, 120, ext, savedPath);
         }
         return "ERROR";
     }
