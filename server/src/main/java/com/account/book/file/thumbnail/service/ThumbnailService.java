@@ -33,7 +33,10 @@ public class ThumbnailService {
 
         Path saveTarget = pathConfig.getThumbnailPath();
 
-        if( !checkUploadPath( saveTarget ) ) return "ERROR";
+        if( !checkUploadPath( saveTarget ) ) {
+            System.err.println("ERROR: SAVE UPLOAD DIR");
+            return "ERROR";
+        }
 
         if( !multipartFile.isEmpty() ) {
             String ext =  FilenameUtils.getExtension(multipartFile.getOriginalFilename());
@@ -43,6 +46,7 @@ public class ThumbnailService {
 
             return ImageUtil.resizeAndSave(multipartFile, 120, 120, ext, savedPath);
         }
+        System.err.println("ERROR: MULTIPART FILE IS EMPTY");
         return "ERROR";
     }
 
