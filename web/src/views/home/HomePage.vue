@@ -1,22 +1,23 @@
 <template>
   <div class="main-viewer home-main" >
-    <template>
+    <template v-if="!$cookies.get('accessToken')">
       <main-title> WooGa(우리 가계부 써요)에 오신것을 환영해요 :) </main-title>
       <sub-title v-for="( value, index ) in subTitle" :key="index">{{ value }}</sub-title>
-      <sub-title  v-if="!accessToken"><router-link to="/signup">회원가입 하러가기</router-link></sub-title>
-      <!-- <label for="thumbnail-upload"></label>
-      <v-img :src="testSrc" />
-      <input type="file" id="thumbnail-upload" @change="uploadThumbnail"/> -->
+      <sub-title><router-link to="/signup">회원가입 하러가기</router-link></sub-title>
       <v-icon class="home-main-icon" color="primary"> mdi-notebook-heart-outline </v-icon>
+    </template>
+    <template v-else>
+      <dash-board/>
     </template>
   </div>
 </template>
 
 <script lang="ts">
+import DashBoard from '@/components/dashboard/DashBoard.vue';
 import { MainTitle, SubTitle } from '@/styled-components/HomeStyle';
 import { defineComponent } from 'vue';
 export default defineComponent({
-  components:{ MainTitle, SubTitle,  },
+  components:{ MainTitle, SubTitle, DashBoard},
   
   data(){
     return {
