@@ -18,7 +18,7 @@ services:
     networks:
       - ab_net
 
-  app-web-1:
+  app-web-1: &app-web
     container_name: app-web-1
     build:
       context: ./web
@@ -26,7 +26,6 @@ services:
     restart: "on-failure"
     hostname: localhost
     volumes:
-      - ./web:/front
       - ./ssh:/root/.ssh
     environment:
       - NODE_ENV=production
@@ -44,41 +43,26 @@ services:
       - app-server-2
 
   app-web-2:
+    <<: *app-web
     container_name: app-web-2
-    build:
-      context: ./web
-      dockerfile: DockerFile.prd
-    restart: "on-failure"
-    hostname: localhost
-    volumes:
-      - ./web:/front
-      - ./ssh:/root/.ssh
-    environment:
-      - NODE_ENV=production
-      - WEB_PORT=82
     ports:
-      - 82:82
       - 10002:22
-    entrypoint: ["/entrypoint.sh"]
-    stdin_open: true
-    tty: true
-    networks:
-      - ab_net
+      - 82:81
+    environment:
+      - WEB_PORT=82
     depends_on:
       - app-server-1
       - app-server-2
-
-  app-server-1:
+    
+  app-server-1: &app-server
     container_name: app-server-1
     build:
       context: ./server
       dockerfile: DockerFile.prd
     restart: on-failure
     volumes:
-      - ./server:/back
-      - /back/.gradle
-      - /back/build
       - ./ssh:/root/.ssh
+      - ./upload:/upload
     ports:
       - 20001:22
     working_dir: /back
@@ -93,29 +77,15 @@ services:
       - postgres
 
   app-server-2:
+    <<: *app-server
     container_name: app-server-2
-    build:
-      context: ./server
-      dockerfile: DockerFile.prd
-    restart: on-failure
-    volumes:
-      - ./server:/back
-      - /back/.gradle
-      - /back/build
-      - ./ssh:/root/.ssh
     ports:
       - 20002:22
-    working_dir: /back
     environment:
-      - SPRING_PROFILES_ACTIVE=prd
       - WAS_PORT=8082
-      - VERSION=1.0
-    entrypoint: ["/entrypoint.sh"]
-    networks:
-      - ab_net
     depends_on:
       - postgres
-
+    
   nginx:
     container_name: nginx
     build:

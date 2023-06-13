@@ -24,8 +24,6 @@ apply plugin: 'io.spring.dependency-management' // 스프링 의존성 관리 �
 
 group 'com.account.book'
 
-version System.getenv("VERSION")
-
 repositories {
     mavenCentral()
 }
