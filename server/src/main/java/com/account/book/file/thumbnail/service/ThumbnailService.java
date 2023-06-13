@@ -23,6 +23,7 @@ public class ThumbnailService {
 
     private boolean checkUploadPath( Path uploadPath ){
         File uploadPathF = uploadPath.toFile();
+        System.out.println( "UPLOAD PATH: " + uploadPathF.getAbsolutePath() );
         if( !uploadPathF.exists() ) return uploadPathF.mkdir();
         else return true;
     }
