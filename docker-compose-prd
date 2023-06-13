@@ -1,4 +1,5 @@
 #!/bin/bash
+# 이 스크립트는 빌드를 먼저 합니다. 따라서 build 옵션을 사용할 필요가 없습니다.
 
 rm ~/.ssh/known_hosts
 

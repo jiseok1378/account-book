@@ -2,3 +2,4 @@ postgres-data
 .idea
 jenkins-data
 jenkins-data/**
+upload/**
