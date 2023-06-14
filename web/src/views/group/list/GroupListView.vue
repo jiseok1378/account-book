@@ -13,8 +13,10 @@
     <div>
         <v-row v-for="(list, index1) in make2Dimension(test,colSize)" :key="index1">
             <v-col 
-                :cols="12" 
-                :md="12 / colSize"
+                :cols="12"
+                :lg="3" 
+                :md="6"
+                :sm="12"
                 v-for="(item, index2) in list" :key="index2">
                 <group-list-item />
             </v-col>
@@ -34,7 +36,7 @@ export default Vue.extend({
   data() {
     return {
       tab: 1,
-      colSize: 3,
+      colSize: 4,
       test: [],
       tabs: [
         {
