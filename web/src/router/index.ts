@@ -1,5 +1,5 @@
+import GroupRequestInviteView from '@/views/group/GroupRequestInviteView.vue'
 import HomeView from '@/views/home/HomePage.vue'
-import PairView from '@/views/pair/PairView.vue'
 import SignInVue from '@/views/sign/SignIn.vue'
 import SignUpVue from '@/views/sign/SignUp.vue'
 import Vue from 'vue'
@@ -23,9 +23,9 @@ const routes: Array<RouteConfig> = [
     component: SignUpVue
   },
   {
-    path: '/pair',
-    name: 'pair',
-    component: PairView
+    path: '/group',
+    name: 'group',
+    component: GroupRequestInviteView
   }
 ]
 

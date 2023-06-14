@@ -1,6 +1,6 @@
 <template>
   <div class="main-viewer">
-    <main-title :icon="icon" :title="title" :subTitle="subTitle" class="main-title"/>
+    <main-title v-if="title" :icon="icon" :title="`${!hideUserNm ? $cookies.get('userNm') + '님의 ' : `` }` + title" :subTitle="subTitle" class="main-title"/>
     <slot></slot>
   </div>
 </template>
@@ -11,6 +11,10 @@ import MainTitle from './title/MainTitle.vue';
 export default Vue.extend({
   components: { MainTitle },
   props:{
+    hideUserNm: {
+      type: Boolean as () => boolean,
+      default: false
+    },  
     icon: String,
     title: String,
     subTitle: String

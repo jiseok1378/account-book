@@ -1,9 +1,9 @@
 <template>
-  <main-viewer 
+  <main-viewer
       title="대시보드"
       icon="mdi-monitor-dashboard"
       subTitle="모든 또는 그룹별 총액과 나의 월별, 일별 총액 등을 확인할 수 있어요!" >
-    <board-item title="나의 총 지출액">
+    <board-item class="board-item" title="나의 총 지출액">
       <v-row>
           <v-col cols="12" sm="6">
             <v-data-table
@@ -19,6 +19,44 @@
           </v-col>
         </v-row>
     </board-item>
+    <board-item class="board-item" title="최근 N 개월동안 가계부에서 가장 많이 나온 단어">
+      <v-row>
+        <v-col cols="12" sm="7">
+          <word-cloud
+            :data="defaultWords"
+            nameKey="name"
+            valueKey="value"
+            :color="myColors"
+            :showTooltip="false"
+            :wordClick="wordClickHandler">
+          </word-cloud>
+        </v-col>
+        <v-col cols="12" sm="5" class="d-flex flex-column justify-space-between">
+          <div >
+            <label 
+              style="color: var(--v-primary-base); font-size: 20px; font-weight: bold;">
+              최근 N개월 동안 가계부에서 가장 많이 나온 단어들을 보여드릴게요
+            </label>
+            <br/>
+            <br/>
+            <label style="font-size: 12px; line-height: 25px;">
+              최근 가장 많이 나온 단어는 {{ defaultWords.map(x => `${x.name}(${x.value})`).join(", ") }}네요.
+              소비를 줄이기 위해 {{ defaultWords[0].name }}에 대한 지출을 줄여보시는건 어떠실까요? 
+            </label>
+          </div>
+          <div class="d-flex justify-end" style="margin: 20px 0px;">
+            <v-btn color="primary" width="100%" class="d-flex align-center "> 
+              <v-icon left>mdi-download</v-icon>워드클라우드 다운로드 
+            </v-btn>
+          </div>
+        </v-col>
+
+      </v-row>
+    </board-item>
+    <board-item class="board-item" title="N개월 이후 예상 소비">
+      {{$cookies.get("userNm")}}님의 소비를 분석하여 N개월까지의 예상 수치를 보여드릴께요!
+      <LineChart :data="chart.data" id="line-chart"/>
+    </board-item>
   </main-viewer>
 </template>
 
@@ -28,18 +66,27 @@ BarElement,
 CategoryScale,
 Chart as ChartJS,
 Legend,
+LineElement,
 LinearScale,
+PointElement,
 Title,
 Tooltip
 } from 'chart.js';
 import Vue from 'vue';
-import { Bar } from 'vue-chartjs';
+import { Bar, Line } from 'vue-chartjs';
+import WordCloud from 'vue-wordcloud';
 import MainViewer from '../global/MainViewer.vue';
 import BoardItem from './components/BoardItem.vue';
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
+ChartJS.register(CategoryScale, LinearScale, BarElement,LineElement, PointElement, Title, Tooltip, Legend)
 export default Vue.extend({
-  components: {MainViewer, BoardItem, Bar}, 
+  components: {MainViewer, BoardItem, Bar, WordCloud, LineChart: Line}, 
+  beforeMount(){
+    this.defaultWords = this.defaultWords.sort((x, y) => y.value - x.value)
+  }, 
   methods:{
+    wordClickHandler(name, value, vm) {
+      console.log('wordClickHandler', name, value, vm);
+    },
     myStyles(){
       return {
         width: `10000px`,
@@ -48,6 +95,64 @@ export default Vue.extend({
   },
   data() {
     return {
+      myColors: ['#1f77b4', '#629fc9', '#94bedb', '#c9e0ef'],
+      chart: {
+        data: {
+          labels: [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023],
+          datasets: [
+            {
+              label: "인원수",
+              backgroundColor: "rgb(255,153,204, 0.5)",
+              pointBackgroundColor: "hotpink",
+              fill: true,
+              tension: 0.1,
+              borderColor: "hotpink",
+              pointBorderColor: "hotpink",
+              borderWidth: 1,
+              pointBorderWidth: 1,
+              data: [450, 300, 100, 1000, 750, 600, 900, 1500, 1200, 2000]
+            }
+          ]
+        },
+      },
+      defaultWords: [
+        {
+          "name": "Cat",
+          "value": 26
+        },
+        {
+          "name": "fish",
+          "value": 19
+        },
+        {
+          "name": "things",
+          "value": 18
+        },
+        {
+          "name": "look",
+          "value": 16
+        },
+        {
+          "name": "two",
+          "value": 15
+        },
+        {
+          "name": "fun",
+          "value": 9
+        },
+        {
+          "name": "know",
+          "value": 9
+        },
+        {
+          "name": "good",
+          "value": 9
+        },
+        {
+          "name": "play",
+          "value": 6
+        }
+      ],
       headers: [
           {
             text: 'Dessert (100g serving)',
@@ -155,6 +260,8 @@ export default Vue.extend({
 })
 </script>
 
-<style>
-
+<style lang="scss">
+.board-item{
+  margin-bottom: 30px;
+}
 </style>

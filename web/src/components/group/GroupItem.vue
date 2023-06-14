@@ -1,19 +1,19 @@
 
 <template>
     <div class="d-flex">
-        <v-row class="pair-item d-flex justify-center">
+        <v-row class="group-item d-flex justify-center">
             <v-col class="d-flex justify-start align-center" :cols="cols" sm="2" >
                 <thumbnail-container :src="item.user.thurmbnailUrl"/>
                 <label class="user-name"><b>{{item.user.userNm}}</b></label>
             </v-col>
-            <v-col class="d-flex justify-start align-center" :cols="cols" sm="7">{{ item.pairMsg }}</v-col>
+            <v-col class="d-flex justify-start align-center" :cols="cols" sm="7">{{ item.groupMsg }}</v-col>
             <v-col class="d-flex justify-start align-center" :cols="cols" sm="2">
                  <router-link to="/" v-if="Object.keys(item).includes('memberList')">
                     멤버 수: {{ item.memberList.length }}
                 </router-link>
             </v-col> 
-            <v-col :class="`d-flex justify-center align-center detail-link ${item.pairStatus != 1 ? 'disabled': ''}`" @click="goPairDetail" :cols="cols" sm="1">
-                 <label class="txt" v-html="statusCode[item.pairStatus]"></label>
+            <v-col :class="`d-flex justify-center align-center detail-link ${item.groupStatus != 1 ? 'disabled': ''}`" @click="goGroupDetail" :cols="cols" sm="1">
+                 <label class="txt" v-html="statusCode[item.groupStatus]"></label>
             </v-col>
         </v-row>
     </div>
@@ -31,7 +31,7 @@ export default Vue.extend({
                 0: '수락<br />대기중',
                 1: '수락',
                 2: '거절',
-                3: '페어 끊김'
+                3: '그룹 끊김'
             }
         }
     },
@@ -45,7 +45,7 @@ export default Vue.extend({
         console.log(this.item)
     },
     methods:{
-        goPairDetail(){
+        goGroupDetail(){
             this.$router.push("/")
         }
     }
@@ -53,7 +53,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.pair-item{
+.group-item{
     margin: 10px 0px;
     border: solid 1px;
     border-color: var(--v-primary-darken2);

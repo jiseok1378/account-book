@@ -1,6 +1,6 @@
 <template>
-    <div class="pair-title-warpper">
-      <div class="d-flex align-center pair-title">
+    <div class="group-title-warpper">
+      <div class="d-flex align-center group-title">
         <v-icon v-if="icon" class="icon" color="primary">{{ icon }}</v-icon>
         {{ title }}
       </div>
@@ -29,12 +29,12 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-.pair-title-warpper{
+.group-title-warpper{
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   margin-bottom: 20px;
-  .pair-title{
+  .group-title{
     font-size: 23px;
     font-weight: bold;
     min-width: fit-content;
@@ -48,12 +48,12 @@ export default Vue.extend({
   }
 }
 @media (max-width: 780px) {
-  .pair-title-warpper{
+  .group-title-warpper{
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
   }
-  .pair-title{
+  .group-title{
     margin-bottom: 10px;
   }
 }

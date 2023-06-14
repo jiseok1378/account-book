@@ -10,8 +10,10 @@
           icon="mdi-notebook-heart-outline"/>
       </div>
       <template v-if="userNm">
-        <banner-btn :title="'나의 페어 목록'" 
-            @click="(e) => $EventBus.$emit('changeRoute','/pair') " />
+        <banner-btn :title="'나의 그룹 요청/초대 목록'" 
+            @click="(e) => $EventBus.$emit('changeRoute','/group') " />
+        <banner-btn :title="'나의 그룹 목록'" 
+            @click="(e) => $EventBus.$emit('changeRoute','/') " />
       </template>
       <v-spacer></v-spacer>
       

@@ -1,5 +1,5 @@
 <template>
-  <div class="pair-tab">
+  <div class="group-tab">
     <tab-container 
         @change="changeValue"
         :items="items"
@@ -41,7 +41,7 @@ export default Vue.extend({
 })
 </script>
 <style lang="scss" scoped>
-.pair-tab{
+.group-tab{
     display: flex;
     justify-content: space-between;
 }

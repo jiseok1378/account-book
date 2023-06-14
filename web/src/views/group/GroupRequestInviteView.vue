@@ -1,9 +1,6 @@
 <template>
-  <div class="main-viewer">
-    <main-title 
-      :title="`${$cookies.get('userNm')}님의 페어 목록`" 
-      subTitle="여기에서는 내가 보낸 페어 요청, 받은 페어 요청, 상태를 확인할 수 있어요." />
-    <pair-tab  
+  <main-viewer :title="`그룹 요청/초대 목록`" subTitle="여기에서는 내가 보낸 그룹 요청, 받은 그룹 요청, 상태를 확인할 수 있어요.">
+    <group-tab  
       :items="tabs" 
       :value="tab" 
       labelKey="label"
@@ -11,7 +8,7 @@
       :selectItems="['a', 'b']"
     /> 
     <div>
-      <pair-item 
+      <group-item 
         v-for="(item, index) in (tab == 1? sendList : postList)"
         :key="index" 
         :item="item" 
@@ -19,31 +16,31 @@
       <infinite-loading :identifier="tab" @infinite="loadMore"></infinite-loading>
     </div>
 
-  </div>
+  </main-viewer>
 </template>
 
 <script lang="ts">
-import { PagenationInfo, PairType } from '@/@types/global-types';
-import MainTitle from '@/components/global/title/MainTitle.vue';
-import PairItem from '@/components/pair/PairItem.vue';
-import PairTab from '@/components/pair/PairTab.vue';
+import { GroupType, PagenationInfo } from '@/@types/global-types';
+import MainViewer from '@/components/global/MainViewer.vue';
+import GroupItem from '@/components/group/GroupItem.vue';
+import GroupTab from '@/components/group/GroupTab.vue';
 import Vue from 'vue';
-interface PairTabsType{
+interface GroupTabsType{
   id: number;
   label: string
   value: string
   total: number;
 }
-interface PairViewType{
+interface GroupViewType{
   tab : number
   pagenationInfo: {
     send: PagenationInfo
     post: PagenationInfo
   },
-  tabs: PairTabsType[] 
+  tabs: GroupTabsType[] 
   isLoad : boolean 
-  sendList: PairType[]
-  postList: PairType[]
+  sendList: GroupType[]
+  postList: GroupType[]
 }
 function getRandomInt(min, max) { //min ~ max 사이의 임의의 정수 반환
   return Math.floor(Math.random() * (max - min)) + min;
@@ -59,11 +56,11 @@ const imgList = [
   'data:image/jpeg;base64,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',
 ]
 export default Vue.extend({
-  components: { PairItem, MainTitle, PairTab },
+  components: { GroupItem, GroupTab, MainViewer },
   created(){
     this.checkExpired()
   },
-  data() : PairViewType {
+  data() : GroupViewType {
     return {
       isLoad : false,
       tab: 1,
@@ -106,10 +103,10 @@ export default Vue.extend({
     this.checkExpired()
   },
   methods:{
-    changeTab(value : PairTabsType){
+    changeTab(value : GroupTabsType){
       this.tab = value.id;
     },
-    getPagingMethod(self : PairViewType){
+    getPagingMethod(self : GroupViewType){
       return {
         isMore:{
           send(){ return self.pagenationInfo.send.total > self.sendList.length },
@@ -129,8 +126,8 @@ export default Vue.extend({
                   userNm: `요청 보낸 사람 ${self.sendList.length}`,
                   userSn: self.sendList.length
                 },
-                pairMsg: '나와 페어가 되어주시겠어요?',
-                pairStatus: getRandomInt(0,3)
+                groupMsg: '나와 그룹가 되어주시겠어요?',
+                groupStatus: getRandomInt(0,3)
               });
             }
           },
@@ -143,8 +140,8 @@ export default Vue.extend({
                   userSn: self.postList.length
                 },
                 memberList: [],
-                pairMsg: '나의 페어가 되어주시겠어요?',
-                pairStatus: getRandomInt(0,3)
+                groupMsg: '나의 그룹가 되어주시겠어요?',
+                groupStatus: getRandomInt(0,3)
               });
             }
           }

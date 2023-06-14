@@ -1,10 +1,10 @@
-export interface PairType{
-    user: PairMemberType
-    pairMsg: string,
-    pairStatus: 0 | 1 | 2 | 3
-    memberList?: PairMemberType[]
+export interface GroupType{
+    user: GroupMemberType
+    groupMsg: string,
+    groupStatus: 0 | 1 | 2 | 3
+    memberList?: GroupMemberType[]
 }
-export interface PairMemberType{
+export interface GroupMemberType{
     userNm: string;
     userSn: number;
     thurmbnailUrl: string;
