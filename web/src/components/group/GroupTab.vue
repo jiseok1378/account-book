@@ -10,8 +10,8 @@
 </template>
 
 <script lang="ts">
+import TabContainer from '@/components/global/tab/TabContainer.vue';
 import Vue from 'vue';
-import TabContainer from '../global/tab/TabContainer.vue';
 export default Vue.extend({
     components: { TabContainer },
     props: {
@@ -44,6 +44,12 @@ export default Vue.extend({
 .group-tab{
     display: flex;
     justify-content: space-between;
+
+}
+@media (max-width: 780px) {
+    .group-tab{
+        flex-direction: column;
+    }
 }
 
 </style>

@@ -1,7 +1,9 @@
-import GroupRequestInviteView from '@/views/group/GroupRequestInviteView.vue'
+import GroupRequestInviteView from '@/views/group/request-invite/GroupRequestInviteView.vue'
 import HomeView from '@/views/home/HomePage.vue'
 import SignInVue from '@/views/sign/SignIn.vue'
 import SignUpVue from '@/views/sign/SignUp.vue'
+
+import GroupListView from '@/views/group/list/GroupListView.vue'
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 Vue.use(VueRouter)
@@ -26,6 +28,11 @@ const routes: Array<RouteConfig> = [
     path: '/group',
     name: 'group',
     component: GroupRequestInviteView
+  },
+  {
+    path: '/group-list',
+    name: 'group-list',
+    component: GroupListView
   }
 ]
 

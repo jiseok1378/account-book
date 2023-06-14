@@ -20,8 +20,8 @@
 </template>
 
 <script lang="ts">
+import ThumbnailContainer from '@/components/global/img/ThumbnailContainer.vue';
 import Vue from 'vue';
-import ThumbnailContainer from '../global/img/ThumbnailContainer.vue';
 export default Vue.extend({
   components: { ThumbnailContainer },
     data(){

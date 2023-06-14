@@ -1,5 +1,11 @@
 <template>
-   <v-tabs @change="(value) => $emit('change', items[value])" :value="val" class="tab-container">
+   <v-tabs 
+    @change="(value) => $emit('change', items[value])" 
+    :value="val" class="tab-container"
+    next-icon="mdi-arrow-right"
+    prev-icon="mdi-arrow-left"
+    show-arrows
+    >
     <v-tabs-slider color="primary"></v-tabs-slider>
     <v-tab class="tab-item" v-for="(item, index) in items" :key="index">
         {{ labelKey ? item[labelKey] : item }} 

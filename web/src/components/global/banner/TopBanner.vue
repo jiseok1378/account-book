@@ -13,7 +13,7 @@
         <banner-btn :title="'나의 그룹 요청/초대 목록'" 
             @click="(e) => $EventBus.$emit('changeRoute','/group') " />
         <banner-btn :title="'나의 그룹 목록'" 
-            @click="(e) => $EventBus.$emit('changeRoute','/') " />
+            @click="(e) => $EventBus.$emit('changeRoute','/group-list') " />
       </template>
       <v-spacer></v-spacer>
       

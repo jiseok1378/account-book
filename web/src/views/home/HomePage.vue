@@ -9,7 +9,12 @@
       </main-viewer>
     </template>
     <template v-else>
-      <dash-board/>
+      <main-viewer
+      title="대시보드"
+      icon="mdi-monitor-dashboard"
+      subTitle="모든 또는 그룹별 총액과 나의 월별, 일별 총액 등을 확인할 수 있어요!" >
+        <dash-board/>
+      </main-viewer>
     </template>
   </div>
 </template>

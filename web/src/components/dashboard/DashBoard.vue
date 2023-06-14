@@ -1,8 +1,5 @@
 <template>
-  <main-viewer
-      title="대시보드"
-      icon="mdi-monitor-dashboard"
-      subTitle="모든 또는 그룹별 총액과 나의 월별, 일별 총액 등을 확인할 수 있어요!" >
+  <div>
     <board-item class="board-item" title="나의 총 지출액">
       <v-row>
           <v-col cols="12" sm="6">
@@ -57,7 +54,7 @@
       {{$cookies.get("userNm")}}님의 소비를 분석하여 N개월까지의 예상 수치를 보여드릴께요!
       <LineChart :data="chart.data" id="line-chart"/>
     </board-item>
-  </main-viewer>
+    </div>
 </template>
 
 <script lang="ts">
@@ -75,11 +72,10 @@ Tooltip
 import Vue from 'vue';
 import { Bar, Line } from 'vue-chartjs';
 import WordCloud from 'vue-wordcloud';
-import MainViewer from '../global/MainViewer.vue';
 import BoardItem from './components/BoardItem.vue';
 ChartJS.register(CategoryScale, LinearScale, BarElement,LineElement, PointElement, Title, Tooltip, Legend)
 export default Vue.extend({
-  components: {MainViewer, BoardItem, Bar, WordCloud, LineChart: Line}, 
+  components: {BoardItem, Bar, WordCloud, LineChart: Line}, 
   beforeMount(){
     this.defaultWords = this.defaultWords.sort((x, y) => y.value - x.value)
   }, 
