@@ -4,7 +4,9 @@
       @click-left-btn="changeRoute('/')"
       @click-right-btn="changeRoute('/signin')"/>
     <v-main>
-      <router-view/>
+      <!-- <keep-alive> 라우터 상태 유지 (리스트 재로딩 방지) -->
+        <router-view/>
+      <!-- </keep-alive> -->
     </v-main>
     <v-avatar class="floating-btn" @click="goTop">
       <v-icon>mdi-transfer-up</v-icon>

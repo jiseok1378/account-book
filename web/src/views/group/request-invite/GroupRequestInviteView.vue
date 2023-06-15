@@ -5,22 +5,21 @@
       :value="tab" 
       labelKey="label"
       @change="changeTab" 
-      :selectItems="['a', 'b']"
     /> 
     <div>
       <group-ri-item 
-        v-for="(item, index) in (tab == 1? sendList : postList)"
+        v-for="(item, index) in itemList[tab]"
         :key="index" 
         :item="item" 
       />
-      <infinite-loading :identifier="tab" @infinite="loadMore"></infinite-loading>
+      <infinite-loading :identifier="tab" @infinite="loadMore" />
     </div>
 
   </main-viewer>
 </template>
 
 <script lang="ts">
-import { GroupTabsType, GroupViewType } from '@/@types/global-types';
+import { GroupRiViewType } from '@/@types/global-types';
 import MainViewer from '@/components/global/MainViewer.vue';
 import GroupRiTab from '@/components/group/GroupTab.vue';
 import GroupRiItem from '@/components/group/request-invite/GroupRiItem.vue';
@@ -45,18 +44,18 @@ export default Vue.extend({
   created(){
     this.checkExpired()
   },
-  data() : GroupViewType {
+  data() : GroupRiViewType {
     return {
       isLoad : false,
-      tab: 1,
+      tab: "send",
       pagenationInfo:{
         send: {
-          count: 10,
+          loadCount: 10,
           page: 1,
           total: 20,
         },
         post: {
-          count: 10,
+          loadCount: 10,
           page: 1,
           total: 100,  
         }
@@ -75,12 +74,13 @@ export default Vue.extend({
           total: 0,
         }
       ],
-      sendList: [],
-      postList: [],
-      self: this
+      itemList:{
+        send: [],
+        post: [],
+      }
     }
   },
-  mounted(){
+  beforeMount(){
     this.tabs[0].total = this.pagenationInfo.send.total
     this.tabs[1].total = this.pagenationInfo.post.total
 
@@ -89,14 +89,14 @@ export default Vue.extend({
     this.checkExpired()
   },
   methods:{
-    changeTab(value : GroupTabsType){
-      this.tab = value.id;
+    changeTab(value : number){
+      this.tab = this.tabs[value].value
     },
-    getPagingMethod(self : GroupViewType){
+    getPagingMethod(self : GroupRiViewType){
       return {
         isMore:{
-          send(){ return self.pagenationInfo.send.total > self.sendList.length },
-          post(){ return self.pagenationInfo.post.total > self.postList.length } 
+          send(){ return self.pagenationInfo.send.total > self.itemList.send.length },
+          post(){ return self.pagenationInfo.post.total > self.itemList.post.length } 
         },
         incresePage:{
           send(){ return self.pagenationInfo.send.page++ },
@@ -105,12 +105,12 @@ export default Vue.extend({
         /* TODO: 서버와 연결시 리펙토링 */          
         loadItem:{
           async send(){
-            for(let i = 0; i < self.pagenationInfo.send.count ; i++){
-              self.sendList.push({
+            for(let i = 0; i < self.pagenationInfo.send.loadCount ; i++){
+              self.itemList.send.push({
                 user: {
                   thurmbnailUrl : imgList[getRandomInt(0, 3)],
-                  userNm: `요청 보낸 사람 ${self.sendList.length}`,
-                  userSn: self.sendList.length
+                  userNm: `요청 보낸 사람 ${self.itemList.send.length}`,
+                  userSn: self.itemList.send.length
                 },
                 groupMsg: '나와 그룹가 되어주시겠어요?',
                 groupStatus: getRandomInt(0,3)
@@ -118,12 +118,12 @@ export default Vue.extend({
             }
           },
           async post(){
-            for(let i = 0; i < self.pagenationInfo.post.count; i++){
-              self.postList.push({
+            for(let i = 0; i < self.pagenationInfo.post.loadCount; i++){
+              self.itemList.post.push({
                 user: {
                   thurmbnailUrl : imgList[getRandomInt(0, 3)],
-                  userNm: `요청 받은 사람 ${self.postList.length}`,
-                  userSn: self.postList.length
+                  userNm: `요청 받은 사람 ${self.itemList.post.length}`,
+                  userSn: self.itemList.post.length
                 },
                 memberList: [],
                 groupMsg: '나의 그룹가 되어주시겠어요?',
@@ -142,11 +142,10 @@ export default Vue.extend({
       }
     },
     async loadMore(e) {
-      const type = this.tabs[this.tab-1].value;
       const pagingMethod = this.getPagingMethod(this);
       await sleep(1000); /* 서버와 연결시 삭제 */
-      if(await pagingMethod.isMore[type]()){
-        await pagingMethod.loadItem[type]();
+      if(await pagingMethod.isMore[this.tab]()){
+        await pagingMethod.loadItem[this.tab]();
         e.loaded();
       }
       else{

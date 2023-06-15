@@ -5,7 +5,7 @@
         :items="items"
         :labelKey="labelKey"
         :value="value"/>
-    <v-select :items="selectItems" />
+    <v-select v-if="selectItems.length !== 0 && selectItems" :items="selectItems" />
   </div>
 </template>
 
@@ -16,7 +16,7 @@ export default Vue.extend({
     components: { TabContainer },
     props: {
         value: {
-            type: Number as () => number,
+            type: String as () => string,
         },
         labelKey: {
             type: String as () => string,
@@ -34,6 +34,7 @@ export default Vue.extend({
     },
     methods:{
         changeValue(value){
+            console.log("GT", value)
             this.$emit('change', value);
         }
     }

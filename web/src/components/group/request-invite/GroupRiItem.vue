@@ -2,18 +2,24 @@
 <template>
     <div class="d-flex">
         <v-row class="group-item d-flex justify-center">
-            <v-col class="d-flex justify-start align-center" :cols="cols" sm="2" >
+            <v-col 
+                class="d-flex justify-start align-center" 
+                :cols="cols" 
+                md="2" >
                 <thumbnail-container :src="item.user.thurmbnailUrl"/>
                 <label class="user-name"><b>{{item.user.userNm}}</b></label>
             </v-col>
-            <v-col class="d-flex justify-start align-center" :cols="cols" sm="7">{{ item.groupMsg }}</v-col>
-            <v-col class="d-flex justify-start align-center" :cols="cols" sm="2">
+            <v-col class="d-flex justify-start align-center" :cols="cols" md="7">{{ item.groupMsg }}</v-col>
+            <v-col class="d-flex justify-start align-center" :cols="cols" md="2">
                  <router-link to="/" v-if="Object.keys(item).includes('memberList')">
                     멤버 수: {{ item.memberList.length }}
                 </router-link>
             </v-col> 
-            <v-col :class="`d-flex justify-center align-center detail-link ${item.groupStatus != 1 ? 'disabled': ''}`" @click="goGroupDetail" :cols="cols" sm="1">
-                 <label class="txt" v-html="statusCode[item.groupStatus]"></label>
+            <v-col :class="`d-flex justify-center align-center`"  :cols="cols" md="1">
+                <v-btn color="primary" class="detail-link" @click="goGroupDetail">
+                    <label class="txt" v-html="statusCode[item.groupStatus]"></label>
+                </v-btn> 
+                <!--  -->
             </v-col>
         </v-row>
     </div>
@@ -41,9 +47,6 @@ export default Vue.extend({
             default: Object
         },
     },
-    mounted(){
-        console.log(this.item)
-    },
     methods:{
         goGroupDetail(){
             this.$router.push("/")
@@ -67,9 +70,8 @@ export default Vue.extend({
         background: var(--v-primary-lighten3);
     }
     .detail-link{
-        cursor: pointer;
-        color: white;
         font-weight: bold;
+        width: 100%;
         background: var(--v-primary-base);
         text-align: center;
         .txt{

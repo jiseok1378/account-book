@@ -1,7 +1,7 @@
 <template>
    <v-tabs 
-    @change="(value) => $emit('change', items[value])" 
-    :value="val" class="tab-container"
+    @change="(value) => $emit('change', value)" 
+    class="tab-container"
     next-icon="mdi-arrow-right"
     prev-icon="mdi-arrow-left"
     show-arrows
@@ -23,7 +23,7 @@ export default Vue.extend({
             default: false,
         },  
         value: {
-            type: Number as () => number
+            type: String as () => string
         },
         labelKey:{
             type: String as () => string,
@@ -34,16 +34,7 @@ export default Vue.extend({
             default: () => ([])
         },
     },
-    data(){
-        return{
-            val : 0
-        }
-    },
-    watch:{
-        value(o, n){
-            this.val = n;
-        }
-    }
+
 })
 </script>
 

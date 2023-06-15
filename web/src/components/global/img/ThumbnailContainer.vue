@@ -1,6 +1,7 @@
 <template>
     <v-avatar :size="size">
-        <img :src="src" />
+        <img v-if="isShowImg" :src="src" @error="errorHandle"/>
+        <v-icon v-else> mdi-face-man </v-icon>
     </v-avatar>
 </template>
 
@@ -12,6 +13,16 @@ export default Vue.extend({
         size: {
             type: Number as () => number,
             default: 30
+        }
+    },
+    data(){
+        return {
+            isShowImg: true,
+        }
+    },
+    methods: {
+        errorHandle(){
+            this.isShowImg = false;
         }
     }
 })

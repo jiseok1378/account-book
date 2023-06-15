@@ -11,4 +11,5 @@ public class GroupDTO {
     private String groupNm;
     private Integer ownerUserSn;
     private Integer groupStatus;
+    private String groupIntro;
 }

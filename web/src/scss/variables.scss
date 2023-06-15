@@ -2,11 +2,17 @@ $font-size-root: 12px;
 
 .main-viewer{
     padding-top: 50px;
-    width: 1024px;
+    width: 1728px;
     margin-left: auto;
     margin-right: auto;
 }
-@media (max-width: 1056px) {
+@media (max-width: 1919px){
+    .main-viewer{
+        width: 1376px;
+    }
+}
+
+@media (max-width: 1440px) {
     .main-viewer{
         width: calc(100% - 2rem)
     }
