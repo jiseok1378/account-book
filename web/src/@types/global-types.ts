@@ -40,6 +40,7 @@ export interface GroupItem{
   role: string
   groupThumbnail: string
   groupMemCnt: number
+  groupSn: number
 }
 
 export interface GroupListViewType{

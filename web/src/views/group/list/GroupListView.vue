@@ -18,7 +18,9 @@
                 :md="6"
                 :sm="12"
                 v-for="(item, index2) in list" :key="index2">
-                <group-list-item :item="item"/>
+                <router-link :to="`/group-detail?groupSn=${item.groupSn}`">
+                  <group-list-item :item="item"/>
+                </router-link>
             </v-col>
         </v-row>
         <infinite-loading :identifier="tab" @infinite="loadMore" />
@@ -101,6 +103,7 @@ export default Vue.extend({
           async invited(){
             for(let i = 0; i < self.pagenationInfo.invited.loadCount ; i++){
               self.itemList.invited.push({
+                groupSn: i,
                 groupIntro: '그룹 소개',
                 groupNm: "그룹",
                 role: '주인장',
@@ -112,6 +115,7 @@ export default Vue.extend({
           async made(){
             for(let i = 0; i < self.pagenationInfo.made.loadCount; i++){
               self.itemList.made.push({
+                groupSn: i,
                 groupIntro: '그룹 소개',
                 groupNm: "그룹",
                 role: '주인장',
