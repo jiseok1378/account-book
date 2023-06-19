@@ -18,9 +18,7 @@
                 :md="6"
                 :sm="12"
                 v-for="(item, index2) in list" :key="index2">
-                <router-link :to="`/group-detail?groupSn=${item.groupSn}`">
-                  <group-list-item :item="item"/>
-                </router-link>
+                <group-list-item :item="item" @click="clickGroupItem(item)"/>
             </v-col>
         </v-row>
         <infinite-loading :identifier="tab" @infinite="loadMore" />
@@ -88,6 +86,9 @@ export default Vue.extend({
     };
   },
   methods: {
+    clickGroupItem(item){
+      this.$EventBus.$emit('changeRoute', {path: `/group/detail/${item.groupSn}`})
+    },
     getPagingMethod(self : GroupListViewType){
       return {
         isMore:{

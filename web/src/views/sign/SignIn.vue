@@ -46,7 +46,7 @@ export default defineComponent({
           userNm : '테스트'
         };
         this.addCookieUserInfo(dumyUserInfo);
-        this.$router.push("/")
+        this.$EventBus.$emit("changeRoute", {name: 'home'})
       }
     }
   }

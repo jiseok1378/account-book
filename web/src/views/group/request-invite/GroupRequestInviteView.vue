@@ -138,7 +138,7 @@ export default Vue.extend({
       if(!this.$cookies.get('accessToken')){
         alert('로그인 후 이용해주세요');
         this.$EventBus.$emit('clearUserInfo');
-        this.$router.push('/signin');
+        this.$EventBus.$emit('signin');
       }
     },
     async loadMore(e) {

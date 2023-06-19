@@ -11,9 +11,9 @@
       </div>
       <template v-if="userNm">
         <banner-btn :title="'나의 그룹 요청/초대 목록'" 
-            @click="(e) => $EventBus.$emit('changeRoute','/group') " />
+            @click="(e) => $EventBus.$emit('changeRoute',{name: 'groupRequest'}) " />
         <banner-btn :title="'나의 그룹 목록'" 
-            @click="(e) => $EventBus.$emit('changeRoute','/group-list') " />
+            @click="(e) => $EventBus.$emit('changeRoute',{name: 'groupList'}) " />
       </template>
       <v-spacer></v-spacer>
       

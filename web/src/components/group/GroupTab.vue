@@ -34,7 +34,6 @@ export default Vue.extend({
     },
     methods:{
         changeValue(value){
-            console.log("GT", value)
             this.$emit('change', value);
         }
     }

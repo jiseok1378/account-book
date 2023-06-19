@@ -1,6 +1,5 @@
 <template>
-    <v-card
-  >
+    <v-card @click="(e) => $emit('click', e)">
     <v-img
       :src="item.groupThumbnail"
       height="200px"

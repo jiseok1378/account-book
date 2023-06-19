@@ -1,5 +1,5 @@
 <template>
-  <div class="main-viewer">
+  <div class="main-viewer" @click="(e) => $emit('click', e)">
     <main-title v-if="title" :icon="icon" :title="`${!hideUserNm ? $cookies.get('userNm') + '님의 ' : `` }` + title" :subTitle="subTitle" class="main-title"/>
     <slot></slot>
   </div>

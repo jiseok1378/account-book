@@ -3,6 +3,7 @@ import HomeView from '@/views/home/HomePage.vue'
 import SignInVue from '@/views/sign/SignIn.vue'
 import SignUpVue from '@/views/sign/SignUp.vue'
 
+import GroupDetailVue from '@/views/group/detail/GroupDetail.vue'
 import GroupListView from '@/views/group/list/GroupListView.vue'
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
@@ -25,14 +26,19 @@ const routes: Array<RouteConfig> = [
     component: SignUpVue
   },
   {
-    path: '/group',
-    name: 'group',
+    path: '/group/request',
+    name: 'groupRequest',
     component: GroupRequestInviteView
   },
   {
-    path: '/group-list',
-    name: 'group-list',
+    path: '/group/list',
+    name: 'groupList',
     component: GroupListView
+  },
+  {
+    path: '/group/detail/:groupSn',
+    name: 'groupDetail',
+    component: GroupDetailVue
   }
 ]
 
