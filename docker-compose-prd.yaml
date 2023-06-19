@@ -1,9 +1,11 @@
 version: "3.3"
 
 services:
+
+  # POSTGRES 컨테이너 : S
   postgres:
     container_name: postgres
-    image: postgres:15.3-alpine3.18
+    image: postgres:15.3-alpine3.18 # 버전 고정 (psql 15.3)
     restart: on-failure
     ports:
       - 15432:5432
@@ -17,12 +19,15 @@ services:
       - ./postgres-sql/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - ab_net
+  # POSTGRES 컨테이너 : E
 
+  # FRONT (Vue.js) 컨테이너 : S
+  # 빌드는 web/DockerFile.prd 보면 build-stage에서 node.js 컨테이너 생성 후 yarn build로 빌드. 후에 nginx 컨테이너를 불러와 리소스 복사
   app-web-1: &app-web
     container_name: app-web-1
     build:
       context: ./web
-      dockerfile: DockerFile.prd
+      dockerfile: DockerFile.prd  
     restart: "on-failure"
     hostname: localhost
     volumes:
@@ -53,7 +58,11 @@ services:
     depends_on:
       - app-server-1
       - app-server-2
+  # FRONT (Vue.js) 컨테이너 : E
     
+  # BACK (Spring boot) 컨테이너 : S
+  # /upload 디렉토리는 업로드되어있는 파일들이 모여있는 디렉토리.
+  # /upload 디렉토리는 로컬 PC에 저장되며 이 디렉토리는 각 Backend 컨테이너에 마운트 되어있음
   app-server-1: &app-server
     container_name: app-server-1
     build:
@@ -85,7 +94,9 @@ services:
       - WAS_PORT=8082
     depends_on:
       - postgres
+  # BACK (Spring boot) 컨테이너 : E
     
+  # NginX 컨테이너 : S
   nginx:
     container_name: nginx
     build:
@@ -102,6 +113,10 @@ services:
       - app-web-2
     networks:
       - ab_net
+  # NginX 컨테이너 : E
+
+  # Jenkins 실행
+  # 해당 Jenkins는 Docker hub에 있는 공식 이미지가 아닌, 직접 만든 이미지로, 해당 이미지를 다운받기 위해서 관리자에게 docker hub ID/PW를 받아야함.
   jenkins:
     container_name: ab-jenkins
     image: jiseok1378/ab-jenkins:latest
