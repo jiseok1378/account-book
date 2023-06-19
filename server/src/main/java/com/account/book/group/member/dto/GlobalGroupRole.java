@@ -12,10 +12,10 @@ public enum GlobalGroupRole{
     private final String roleId;
     private final String roleNm;
 
-    public static GroupRoleDTO globalRoleToDto(GlobalGroupRole role){
+    public GroupRoleDTO toDto(){
         GroupRoleDTO dto = new GroupRoleDTO();
-        dto.setRoleId(role.getRoleId());
-        dto.setRoleNm(role.getRoleNm());
+        dto.setRoleId(this.getRoleId());
+        dto.setRoleNm(this.getRoleNm());
         return dto;
     }
 }

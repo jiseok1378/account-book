@@ -10,9 +10,6 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 @RequiredArgsConstructor
 public class WebConfiguration implements WebMvcConfigurer {
 
-
-    private final UploadPathConfig pathConfig;
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
