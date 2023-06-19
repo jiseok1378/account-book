@@ -8,8 +8,16 @@
 <mapper namespace="com.account.book.group.dao.GroupDAO">
 
     <insert id="addGroup" parameterType="com.account.book.group.dto.GroupDTO">
-        INSERT INTO TB_GROUP(GROUP_NM, OWNER_USER_SN)
-        VALUES (#{groupNm}, #{ownerUserSn}, #{groupIntro})
+        INSERT INTO TB_GROUP(GROUP_NM, OWNER_USER_SN, GROUP_INTRO)
+        VALUES
+               (
+                #{groupNm},
+                #{ownerUserSn},
+                <choose>
+                    <when test="groupIntro == null">''</when>
+                    <otherwise>#{groupIntro}</otherwise>
+                </choose>
+                )
         <selectKey resultType="java.lang.Integer" keyProperty="groupSn" order="AFTER">
             SELECT currval(pg_get_serial_sequence('TB_GROUP', 'group_sn'))
         </selectKey>

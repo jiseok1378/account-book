@@ -13,4 +13,5 @@ public interface UserDAO {
     List<UserDTO> findAllUser();
     Optional<UserDTO> findUserByUserSn(Integer userSn );
     Optional<UserDTO> findUserByUserId( String userId );
+    Optional<UserDTO> findUserByUserIdAndPassword(UserDTO userDTO);
 }

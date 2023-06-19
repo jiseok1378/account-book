@@ -6,7 +6,12 @@
     - 해당 파일은 SQL 문을 작성하는 곳입니다.
 -->
 <mapper namespace="com.account.book.user.dao.UserDAO">
-
+    <select id="findUserByUserIdAndPassword" parameterType="com.account.book.user.dto.UserDTO" resultType="com.account.book.user.dto.UserDTO">
+        SELECT *
+        FROM TB_USER U
+        WHERE U.USER_ID = #{userId}
+            AND U.USER_PW = #{userPw}
+    </select>
     <insert id="addUser" parameterType="com.account.book.user.dto.UserDTO">
         INSERT INTO TB_USER(
             USER_ID,

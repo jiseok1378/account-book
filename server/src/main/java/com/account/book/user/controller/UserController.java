@@ -17,16 +17,12 @@ public class UserController {
     private final UserService userService;
     private final ResponseService responseService;
 
-    @PostMapping
-    public SingleResult<Integer> addUser(HttpServletRequest request, @RequestBody UserDTO userDTO ){
-        return responseService.getSingleResult(userService.addUser( request, userDTO ));
-    }
     @GetMapping("/all")
     public ListResult<UserDTO> findAllUser(){
         return responseService.getListResult(userService.findAllUser());
     }
     @GetMapping
-    public SingleResult<UserDTO> findUserByUserSn( @RequestParam String userId){
+    public SingleResult<UserDTO> findUserByUserSn( @RequestParam String userId ){
         return responseService.getSingleResult(userService.findUserByUserId( userId ).orElseThrow(RuntimeException::new));
     }
 

@@ -87,7 +87,7 @@ public class SystemSimulation {
         user1.setUserId(userId1);
         user1.setUserNm(userId1);
         user1.setUserPw(userId1);
-        mvc.perform(post("/api/user")
+        mvc.perform(post("/api/authenticate/sign/up")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(user1))
         ).andExpect(status().isOk());
@@ -97,22 +97,22 @@ public class SystemSimulation {
         user2.setUserId(userId2);
         user2.setUserNm(userId2);
         user2.setUserPw(userId2);
-        mvc.perform(post("/api/user")
+        mvc.perform(post("/api/authenticate/sign/up")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(user2))
         ).andExpect(status().isOk());
 
-        SingleResult<UserDTO> selectedUser1 = mapper.readValue(mvc.perform(get("/api/user")
+        SingleResult<UserDTO> selectedUser1 = mapper.readValue(mvc.perform(post("/api/authenticate/sign/in")
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("userId", userId1))
+                .content(mapper.writeValueAsString(user1)))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(), new TypeReference<>(){});
 
-        SingleResult<UserDTO> selectedUser2 = mapper.readValue(mvc.perform(get("/api/user")
+        SingleResult<UserDTO> selectedUser2 = mapper.readValue(mvc.perform(post("/api/authenticate/sign/in")
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("userId", userId2))
+                .content(mapper.writeValueAsString(user2)))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
